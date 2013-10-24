@@ -1,4 +1,4 @@
-package com.example.groupvite;
+package com.groupvite.models;
 
 public enum Response {
 	YES,

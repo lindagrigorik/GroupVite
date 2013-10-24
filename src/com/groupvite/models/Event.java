@@ -1,6 +1,7 @@
-package com.example.groupvite;
+package com.groupvite.models;
 
 import java.util.List;
+
 
 public class Event {
 	private String eventTitle;
