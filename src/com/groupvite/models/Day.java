@@ -48,5 +48,9 @@ public class Day implements Serializable {
 		}
 		return listOfDays;
 	}
+	
+	public String toString(){
+		return this.date + " responses: "+this.responses;
+	}
 
 }
