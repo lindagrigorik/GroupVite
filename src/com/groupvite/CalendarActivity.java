@@ -1,28 +1,18 @@
 package com.groupvite;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.groupvite.models.Event;
 import com.groupvite.util.Operation;
-import com.squareup.timessquare.CalendarPickerView;
-import com.squareup.timessquare.CalendarPickerView.SelectionMode;
 
 public class CalendarActivity extends Activity {
 	protected static final String TAG = "GroupVite";
-	CalendarPickerView calendar;
+//	CalendarPickerView calendar;
 	EditText eventTitle;
 	Event event;
 
@@ -46,7 +36,7 @@ public class CalendarActivity extends Activity {
 		switch (Operation.valueOf(operation)) {
 		case ADD_NEW_EVENT:
 			// have to create a new event
-			createNewEvent();
+//			createNewEvent();
 			break;
 		case RESPOND_TO_INVITE:
 			// get from database, the event details
@@ -68,7 +58,7 @@ public class CalendarActivity extends Activity {
 		// if (operation.equalsIgnor)
 
 	}
-
+/*
 	private void createNewEvent() {
 		// TODO Auto-generated method stub
 		final Calendar nextYear = Calendar.getInstance();
@@ -119,7 +109,7 @@ public class CalendarActivity extends Activity {
 		});
 
 	}
-
+*/
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
