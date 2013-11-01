@@ -4,6 +4,9 @@
     <string name="app_name">GroupVite</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_calendar">CalendarActivity</string>
+    <string name="title_activity_calendar">Pick Your Dates</string>
+    <string name="title_activity_contacts">Choose Your Contacts</string>
+    <string name="contacts">Select contacts</string>
+    <string name="message">Type your message</string>
 
 </resources>

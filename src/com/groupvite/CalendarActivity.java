@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.widget.EditText;
 
 import com.groupvite.models.Event;
@@ -117,4 +118,8 @@ public class CalendarActivity extends Activity {
 		return true;
 	}
 
+	public void onFinish(View v){
+	    Intent i = new Intent(this, ContactsActivity.class);
+	    startActivity(i);
+	}
 }
