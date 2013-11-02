@@ -300,7 +300,7 @@ public class CalendarActivity extends FragmentActivity {
 				}
 
 				user.save();
-				Intent i = new Intent(CalendarActivity.this, MainActivity.class);
+				Intent i = new Intent(CalendarActivity.this, ContactsActivity.class);
 				i.putExtra("event", event);
 				startActivity(i);
 
