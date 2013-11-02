@@ -9,31 +9,34 @@
     tools:context=".ContactsActivity" >
 
     <EditText
-        android:id="@+id/etContacts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:ems="10"
-        android:hint="@string/contacts" >
-
-        <requestFocus />
-    </EditText>
-
-    <EditText
         android:id="@+id/etMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/etContacts"
         android:layout_marginTop="144dp"
-        android:ems="10"
-        android:lines="10"
-        android:gravity="top|left"
-        android:inputType="textMultiLine"
         android:background="@drawable/border"
-        android:hint="@string/message" />
+        android:ems="10"
+        android:gravity="top|left"
+        android:hint="@string/message"
+        android:inputType="textMultiLine"
+        android:lines="10" />
+
+    <Button
+        android:id="@+id/btnAddContacts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/etMessage"
+        android:layout_alignParentTop="true"
+        android:text="Add Contacts" />
+
+    <TextView
+        android:id="@+id/resultsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btnAddContacts"
+        android:layout_alignRight="@+id/etMessage"
+        android:layout_below="@+id/btnAddContacts"
+        android:text="TextView" />
 
 </RelativeLayout>

@@ -11,5 +11,7 @@
     <string name="new_event">New Event</string>
     <string name="your_events">Your Events</string>
     <string name="app_id">348086935327984</string>
-    
+    <string name="exception">Exception: %1$s</string>
+    <string name="title_activity_pick_friends">PickFriendsActivity</string>
+
 </resources>
