@@ -5,24 +5,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-@Table(name = "Events")
-public class Event extends Model implements Serializable {
+public class Event implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2244371851975031083L;
 	
-	@Column(name = "EventList")
 	private String eventTitle;
 	
-	@Column(name = "DayList")
 	private ArrayList<Day> days;
-	@Column(name = "Host")
 	private User host;
-	@Column(name = "FinalSelectedDay")
 	private Day finalSelectedDay;
 
 	public Event(){}

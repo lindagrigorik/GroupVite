@@ -6,19 +6,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-
-@Table(name = "Days")
-public class Day extends Model implements Serializable {
+public class Day implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5927378082035803886L;
-	@Column(name="Date")
 	private Date date;
-	@Column(name="responseMap")
 	private HashMap<User, Response> responses;
 
 	public Day() {
