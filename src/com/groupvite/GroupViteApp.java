@@ -21,7 +21,10 @@ public class GroupViteApp extends com.activeandroid.app.Application {
         super.onCreate();
         GroupViteApp.context = this;
         
-        Parse.initialize(this, "5znRdifSaJ7N0QhFSXwbsKQspLiTD7QAGe7SEzb3", "4NJsZ3uQ8ow2w6Oxb2LQmdgu6pDXgc0kE9WnRbfo"); 
+        Parse.initialize(this, "5znRdifSaJ7N0QhFSXwbsKQspLiTD7QAGe7SEzb3", "4NJsZ3uQ8ow2w6Oxb2LQmdgu6pDXgc0kE9WnRbfo");
+        
+        PushService.setDefaultPushCallback(this, EventsActivity.class);
+        ParseInstallation.getCurrentInstallation().saveInBackground();
     }
     
     public Collection<GraphUser> getSelectedUsers() {

@@ -4,13 +4,14 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-permission android:name="android.permission.INTERNET" >
-    </uses-permission>
-
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="18" />
-
+    
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:name="com.groupvite.GroupViteApp"
         android:allowBackup="true"
@@ -22,7 +23,6 @@
             android:label="@string/your_events" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -35,16 +35,20 @@
             android:label="@string/title_activity_contacts" >
         </activity>
 
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/app_id" />
-
-        <activity android:name="com.facebook.LoginActivity" >
-        </activity>
         <activity
             android:name="com.groupvite.PickFriendsActivity"
             android:label="@string/title_activity_pick_friends" >
         </activity>
+           
+        <meta-data android:value="@string/app_id" android:name="com.facebook.sdk.ApplicationId"/>
+        <activity android:name="com.facebook.LoginActivity"></activity>
+        <service android:name="com.parse.PushService" />
+        <receiver android:name="com.parse.ParseBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
