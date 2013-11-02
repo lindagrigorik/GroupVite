@@ -8,5 +8,7 @@
     <string name="title_activity_contacts">Choose Your Contacts</string>
     <string name="contacts">Select contacts</string>
     <string name="message">Type your message</string>
-
+    <string name="new_event">New Event</string>
+    <string name="your_events">Your Events</string>
+    
 </resources>
