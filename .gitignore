@@ -29,3 +29,5 @@ proguard/
 .idea/
 
 *.properties
+
+libs/.DS_Store
