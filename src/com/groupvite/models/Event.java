@@ -3,24 +3,18 @@ package com.groupvite.models;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-
-@Table(name = "Events")
-public class Event extends Model implements Serializable {
+public class Event implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2244371851975031083L;
-	@Column(name = "EventTitle")
+	private long eventId;
 	private String eventTitle;
-	@Column(name = "HostSelectedDates")
 	private ArrayList<Date> hostSelectedDates;
-	@Column(name = "Host")
-	private String host;
-	@Column(name = "FinalSelectedDay")
+	private User host;
+	private HashMap<User, InviteeResponse> inviteeResponseMap;
 	private Date finalSelectedDay;
 
 	public Event() {
@@ -42,11 +36,11 @@ public class Event extends Model implements Serializable {
 		this.hostSelectedDates = selectedDates;
 	}
 
-	public String getHost() {
+	public User getHost() {
 		return this.host;
 	}
 
-	public void setHost(String host) {
+	public void setHost(User host) {
 		this.host = host;
 	}
 
@@ -61,6 +55,41 @@ public class Event extends Model implements Serializable {
 	public String toString() {
 		return this.eventTitle + "hosted by: " + this.host
 				+ " who selected the following dates: " + this.hostSelectedDates;
+	}
+
+	public HashMap<User, InviteeResponse> getInviteeResponseMap() {
+		return inviteeResponseMap;
+	}
+
+	public void setInviteeResponseMap(
+			HashMap<User, InviteeResponse> inviteeResponseMap) {
+		this.inviteeResponseMap = inviteeResponseMap;
+	}
+
+	public long getEventId() {
+		return eventId;
+	}
+
+	public void setEventId(long eventId) {
+		this.eventId = eventId;
+	}
+
+	public void initializeInviteeResponseForUser(User user) {
+		if (this.getInviteeResponseMap() == null) {
+			HashMap<User, InviteeResponse> inviteeResponseMap = new HashMap<User, InviteeResponse>();
+
+			this.setInviteeResponseMap(inviteeResponseMap);
+		}
+		if (inviteeResponseMap.get(user) == null) {
+			InviteeResponse inviteeResponse = new InviteeResponse();
+			HashMap<Date, Response> resp = new HashMap<Date, Response>();
+			for (int i = 0; i < hostSelectedDates.size(); i++) {
+				resp.put(hostSelectedDates.get(i), Response.NO_RESPONSE);
+			}
+			inviteeResponse.setResponseMap(resp);
+
+			inviteeResponseMap.put(user, inviteeResponse);
+		}
 	}
 
 }
