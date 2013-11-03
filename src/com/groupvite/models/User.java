@@ -3,21 +3,13 @@ package com.groupvite.models;
 import java.io.Serializable;
 import java.util.List;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-
-@Table(name = "Users")
-public class User extends Model implements Serializable {
+public class User implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6827603829256994906L;
-	@Column(name = "Events")
 	private List<Event> events;
-	@Column(name = "UserId")
 	private long userId;
-	@Column(name = "Username")
 	private String name;
 
 	// need to add more fields depending on what we get back from Facebook
@@ -26,7 +18,6 @@ public class User extends Model implements Serializable {
 
 	public List<Event> getEvents() {
 		return this.events;
-//		return getMany(Event.class, "User");
 	}
 
 	public void setEvents(List<Event> events) {
