@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.activeandroid.query.Select;
 import com.groupvite.models.Event;
 import com.groupvite.models.User;
 import com.groupvite.util.Operation;
@@ -53,11 +52,11 @@ public class CalendarActivity extends FragmentActivity {
 		// If activity is created from fresh
 		// else {
 
-		/*
-		 * Determine whether you came here because 1) clicked "add" sign (host) 2)
-		 * clicked activity to respond to host's invite (invitee) 3) clicked on
-		 * event to edit activity (both host + invitee)
-		 */
+		
+//		 * Determine whether you came here because 1) clicked "add" sign (host) 2)
+//		 * clicked activity to respond to host's invite (invitee) 3) clicked on
+//		 * event to edit activity (both host + invitee)
+		 
 		Intent i = getIntent();
 		String operation = i.getStringExtra("operation");
 		if (operation == null) {
@@ -99,8 +98,9 @@ public class CalendarActivity extends FragmentActivity {
 		// String eventToEdit = getIntent().getStringExtra("eventToEdit");
 		String eventToEdit = "abc";
 		Log.i(TAG, "We're trying to edit an event here: " + eventToEdit);
-		Event event = new Select().from(Event.class)
-				.where("EventTitle = ?", eventToEdit).executeSingle();
+		Event event = new Event();
+//		Event event = new Select().from(Event.class)
+//				.where("EventTitle = ?", eventToEdit).executeSingle();
 		Log.i(TAG, "Show me event: " + event);
 		// Log.i(TAG, "eventTitle")
 		if (event == null) {
@@ -281,14 +281,12 @@ public class CalendarActivity extends FragmentActivity {
 					ArrayList<Event> events = new ArrayList<Event>();
 					user.setEvents(events);
 				}
-				user.save();
+//				user.save();
 
-				for (int i = 0; i < event.getDays().size(); i++) {
-					event.getDays().get(i).save();
-				}
+				
 
 				// save to sql
-				event.save();
+//				event.save();
 				if (user.getEvents() == null) {
 					ArrayList<Event> events = new ArrayList<Event>();
 					events.add(event);
@@ -299,7 +297,7 @@ public class CalendarActivity extends FragmentActivity {
 					// user.setEvents();
 				}
 
-				user.save();
+//				user.save();
 				Intent i = new Intent(CalendarActivity.this, ContactsActivity.class);
 				i.putExtra("event", event);
 				startActivity(i);
