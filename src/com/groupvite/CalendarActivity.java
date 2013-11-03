@@ -27,7 +27,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.activeandroid.query.Select;
 import com.groupvite.models.Event;
 import com.groupvite.models.InviteeResponse;
 import com.groupvite.models.Response;
@@ -309,7 +308,7 @@ public class CalendarActivity extends FragmentActivity {
 		e.setEventTitle("abc");
 		User user = new User();
 		user.setName("Neha");
-		user.setUserId(123);
+		user.setUserId("123");
 		e.setHost(user);
 		ArrayList<Date> dates = new ArrayList<Date>();
 		try {
