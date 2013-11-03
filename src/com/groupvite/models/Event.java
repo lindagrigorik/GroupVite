@@ -5,17 +5,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Event implements Serializable {
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+@Table(name="Events")
+public class Event extends Model implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2244371851975031083L;
-	
+	@Column(name = "EventTitle")
 	private String eventTitle;
-	
-	private ArrayList<Day> days;
-	private User host;
-	private Day finalSelectedDay;
+	@Column(name = "HostSelectedDates")
+	private ArrayList<Date> hostSelectedDates;
+	private String host;
+	private Date finalSelectedDay;
 
 	public Event(){}
 	public String getEventTitle() {
@@ -26,27 +30,27 @@ public class Event implements Serializable {
 		this.eventTitle = eventTitle;
 	}
 
-	public List<Day> getDays() {
-		return days;
+	public ArrayList<Date> getDays() {
+		return this.hostSelectedDates;
 	}
 
-	public void setDays(ArrayList<Date> selectedDates) {
-		this.days = Day.convertToDays(selectedDates);
+	public void setHostSelectedDates(ArrayList<Date> selectedDates) {
+		this.hostSelectedDates = selectedDates;
 	}
 
-	public User getHost() {
-		return host;
+	public String getHost() {
+		return this.host;
 	}
 
-	public void setHost(User host) {
+	public void setHost(String host) {
 		this.host = host;
 	}
 
-	public Day getFinalSelectedDay() {
+	public Date getFinalSelectedDay() {
 		return finalSelectedDay;
 	}
 
-	public void setFinalSelectedDay(Day finalSelectedDay) {
+	public void setFinalSelectedDay(Date finalSelectedDay) {
 		this.finalSelectedDay = finalSelectedDay;
 	}
 

@@ -265,7 +265,7 @@ public class CalendarActivity extends FragmentActivity {
 				// created a new event, so save the current user as host, and event
 				// details and selected dates and call new activity
 				Event event = new Event();
-				event.setDays(new ArrayList<Date>(alreadySelectedDates));
+				event.setHostSelectedDates(new ArrayList<Date>(alreadySelectedDates));
 				EditText eventTitle = (EditText) findViewById(R.id.etEventTitle);
 				if (eventTitle.getText() == null
 						|| eventTitle.getText().toString().isEmpty()) {
@@ -276,7 +276,7 @@ public class CalendarActivity extends FragmentActivity {
 				event.setEventTitle(eventTitle.getText().toString());
 				User user = User.getCurUser();
 
-				event.setHost(user);
+				event.setHost(user.getName());
 				if (user.getEvents() == null) {
 					ArrayList<Event> events = new ArrayList<Event>();
 					user.setEvents(events);
