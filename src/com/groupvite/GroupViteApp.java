@@ -2,6 +2,7 @@ package com.groupvite;
 
 import java.util.Collection;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.facebook.model.GraphUser;
@@ -14,7 +15,7 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 import com.parse.PushService;
 
-public class GroupViteApp extends com.activeandroid.app.Application {
+public class GroupViteApp extends Application {
 	private static Context context;
     private Collection<GraphUser> selectedUsers;
 
