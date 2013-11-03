@@ -12,6 +12,8 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
+import com.groupvite.models.User;
+import com.groupvite.util.ParseClient;
 
 public class EventsActivity extends Activity {
 
@@ -29,10 +31,13 @@ public class EventsActivity extends Activity {
 					Request.newMeRequest(session, new Request.GraphUserCallback() {
 						// callback after Graph API response with user object
 						@Override
-						public void onCompleted(GraphUser user, Response response) {
-							if (user != null) {
+						public void onCompleted(GraphUser graphUser, Response response) {
+							if (graphUser != null) {
+								User user = User.fromGraphUser(graphUser);
+								ParseClient.populateUser(user);
+								
 								Toast.makeText(getApplicationContext(),
-										"Welcome " + user.getName() + "!", Toast.LENGTH_SHORT).show();
+										"Welcome " + user.getName() +  "!", Toast.LENGTH_SHORT).show();
 							}
 						}
 					}).executeAsync();

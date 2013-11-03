@@ -6,6 +6,7 @@ import java.util.Collection;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -103,6 +104,7 @@ public class ContactsActivity extends Activity {
         if (selection != null && selection.size() > 0) {
             for (GraphUser user : selection) {
                 users.add(User.fromGraphUser(user));
+                Log.d("SUBHA", "ID : " + user.getId());
             }
         }
         
