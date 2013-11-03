@@ -12,6 +12,10 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseUser;
 
 public class EventsActivity extends Activity {
 
@@ -20,6 +24,17 @@ public class EventsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_events);
 		
+		/*ParseFacebookUtils.logIn(this, new LogInCallback() {
+		    @Override
+                    public void done(ParseUser user, ParseException arg1) {
+	                // TODO Auto-generated method stub
+			if (user != null) {
+			   getFacebookIdInBackground();
+			}
+                    }
+		  });*/
+		
+		  
 		// start Facebook login
 		Session.openActiveSession(this, true, new Session.StatusCallback() {
 			// callback when session changes state
@@ -51,6 +66,18 @@ public class EventsActivity extends Activity {
 				"selected dates are: " + event.getDays(), Toast.LENGTH_SHORT).show();
 		*/
 	}
+	
+	/*private static void getFacebookIdInBackground() {
+	    Request.executeMeRequestAsync(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
+	      @Override
+	      public void onCompleted(GraphUser user, Response response) {
+	        if (user != null) {
+	          ParseUser.getCurrentUser().put("fbId", user.getId());
+	          ParseUser.getCurrentUser().saveInBackground();
+	        }
+	      }
+	    });
+	  }*/
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,6 +97,7 @@ public class EventsActivity extends Activity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+		//ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
 	}
 
 }

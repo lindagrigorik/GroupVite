@@ -18,6 +18,7 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
+import com.parse.ParseObject;
 
 public class ContactsActivity extends Activity {   
 	private static final int PICK_FRIENDS_ACTIVITY = 1;
@@ -126,7 +127,9 @@ public class ContactsActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menu) {
-		Toast.makeText(this.getBaseContext(), "SEND", Toast.LENGTH_SHORT).show();
-		return false;
+	Toast.makeText(this.getBaseContext(), "SEND", Toast.LENGTH_SHORT).show();
+	ParseObject contacts = new ParseObject("contacts");
+	
+	return false;
     }
 }

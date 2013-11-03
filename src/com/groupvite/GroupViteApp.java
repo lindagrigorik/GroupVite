@@ -8,6 +8,7 @@ import com.activeandroid.ActiveAndroid;
 import com.facebook.model.GraphUser;
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 import com.parse.PushService;
 
@@ -22,6 +23,7 @@ public class GroupViteApp extends com.activeandroid.app.Application {
         GroupViteApp.context = this;
         
         Parse.initialize(this, "5znRdifSaJ7N0QhFSXwbsKQspLiTD7QAGe7SEzb3", "4NJsZ3uQ8ow2w6Oxb2LQmdgu6pDXgc0kE9WnRbfo");
+        ParseFacebookUtils.initialize("348086935327984");
         
         PushService.setDefaultPushCallback(this, EventsActivity.class);
         ParseInstallation.getCurrentInstallation().saveInBackground();
