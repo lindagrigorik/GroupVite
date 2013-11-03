@@ -3,12 +3,12 @@ package com.groupvite.models;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-@Table(name="Events")
+
+@Table(name = "Events")
 public class Event extends Model implements Serializable {
 	/**
 	 * 
@@ -18,10 +18,14 @@ public class Event extends Model implements Serializable {
 	private String eventTitle;
 	@Column(name = "HostSelectedDates")
 	private ArrayList<Date> hostSelectedDates;
+	@Column(name = "Host")
 	private String host;
+	@Column(name = "FinalSelectedDay")
 	private Date finalSelectedDay;
 
-	public Event(){}
+	public Event() {
+	}
+
 	public String getEventTitle() {
 		return eventTitle;
 	}
@@ -30,7 +34,7 @@ public class Event extends Model implements Serializable {
 		this.eventTitle = eventTitle;
 	}
 
-	public ArrayList<Date> getDays() {
+	public ArrayList<Date> getHostSelectedDates() {
 		return this.hostSelectedDates;
 	}
 
@@ -52,6 +56,11 @@ public class Event extends Model implements Serializable {
 
 	public void setFinalSelectedDay(Date finalSelectedDay) {
 		this.finalSelectedDay = finalSelectedDay;
+	}
+
+	public String toString() {
+		return this.eventTitle + "hosted by: " + this.host
+				+ " who selected the following dates: " + this.hostSelectedDates;
 	}
 
 }

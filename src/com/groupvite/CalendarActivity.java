@@ -2,14 +2,20 @@ package com.groupvite;
 
 import hirondelle.date4j.DateTime;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -20,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.activeandroid.query.Select;
 import com.groupvite.models.Event;
 import com.groupvite.models.User;
 import com.groupvite.util.Operation;
@@ -37,7 +44,8 @@ public class CalendarActivity extends FragmentActivity {
 	// final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
 	final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-	ArrayList<Date> alreadySelectedDates = new ArrayList<Date>();
+	ArrayList<Date> hostSelectedDates = new ArrayList<Date>();
+	ArrayList<Date> inviteeSelectedDates;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +53,12 @@ public class CalendarActivity extends FragmentActivity {
 		setContentView(R.layout.activity_calendar);
 
 		caldroidFragment = new CaldroidFragment();
+
+		SharedPreferences pref = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		String username = pref.getString("name", "n/a");
+		Log.i(TAG, "username is what now? " + username);
+
 		// if (savedInstanceState != null) {
 		// caldroidFragment.restoreStatesFromKey(savedInstanceState,
 		// "CALDROID_SAVED_STATE");
@@ -52,18 +66,18 @@ public class CalendarActivity extends FragmentActivity {
 		// If activity is created from fresh
 		// else {
 
-		
-//		 * Determine whether you came here because 1) clicked "add" sign (host) 2)
-//		 * clicked activity to respond to host's invite (invitee) 3) clicked on
-//		 * event to edit activity (both host + invitee)
-		 
+		// * Determine whether you came here because 1) clicked "add" sign (host) 2)
+		// * clicked activity to respond to host's invite (invitee) 3) clicked on
+		// * event to edit activity (both host + invitee)
+
 		Intent i = getIntent();
 		String operation = i.getStringExtra("operation");
 		if (operation == null) {
 			Log.e(TAG, "Remember to pass in the operation!!");
 			Log.i(TAG, "Defaulting to whatever we want for testing");
-			operation = "ADD_NEW_EVENT";
-			// operation = "EDIT_CREATED_EVENT" ;
+			// operation = "ADD_NEW_EVENT";
+			// operation = "EDIT_CREATED_EVENT";
+			operation = "RESPOND_TO_INVITE";
 		}
 		switch (Operation.valueOf(operation)) {
 		case ADD_NEW_EVENT:
@@ -73,10 +87,9 @@ public class CalendarActivity extends FragmentActivity {
 		case RESPOND_TO_INVITE:
 			// get from database, the event details
 			// show list of preselected dates that you can choose to
+			respondToInvite();
 			break;
 		case EDIT_CREATED_EVENT:
-			// default
-
 			// get from database, the event details
 			// show calendar
 			editCreatedEvent();
@@ -93,46 +106,78 @@ public class CalendarActivity extends FragmentActivity {
 
 	}
 
-	private void editCreatedEvent() {
+	public ArrayList<Date> getDatesBetweentMinAndMax(Date minDate, Date maxDate,
+			ArrayList<Date> selectedDates) {
+		ArrayList<Date> dates = new ArrayList<Date>();
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(minDate);
 
-		// String eventToEdit = getIntent().getStringExtra("eventToEdit");
-		String eventToEdit = "abc";
-		Log.i(TAG, "We're trying to edit an event here: " + eventToEdit);
-		Event event = new Event();
-//		Event event = new Select().from(Event.class)
-//				.where("EventTitle = ?", eventToEdit).executeSingle();
-		Log.i(TAG, "Show me event: " + event);
-		// Log.i(TAG, "eventTitle")
-		if (event == null) {
-			Toast.makeText(CalendarActivity.this, "whoops, didn't get event",
-					Toast.LENGTH_SHORT);
-			return;
+		while (calendar.getTime().before(maxDate)) {
+
+			Date result = null;
+			try {
+				result = formatter.parse(formatter.format(calendar.getTime()));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (!selectedDates.contains(result)) {
+				dates.add(result);
+			}
+			calendar.add(Calendar.DATE, 1);
 		}
+
+		return dates;
+	}
+
+	private void respondToInvite() {
+		Log.i(TAG, "In respondToInvite");
+		inviteeSelectedDates = new ArrayList<Date>();
+		Event event = stubEvent();
+		ArrayList<Date> hostDates = event.getHostSelectedDates();
+		Collections.sort(hostDates);
+		hostSelectedDates = hostDates;
+		Date minDate = hostDates.get(0);
+		Date maxDate = hostDates.get(hostDates.size() - 1);
+		// get disabled dates
+		ArrayList<DateTime> disabledDateTimes = getDisabledDates(hostDates,
+				minDate, maxDate);
+
 		Bundle args = new Bundle();
 		Calendar cal = Calendar.getInstance();
 		args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
-
 		args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
 		args.putBoolean(CaldroidFragment.ENABLE_SWIPE, true);
-
 		args.putBoolean(CaldroidFragment.SIX_WEEKS_IN_CALENDAR, true);
 		args.putString(CaldroidFragment.MIN_DATE, formatter.format(cal.getTime()));
+		args.putString(CaldroidFragment.MAX_DATE,
+				formatter.format(hostDates.get(hostDates.size() - 1)));
+		args.putStringArrayList(CaldroidFragment.DISABLE_DATES,
+				CalendarHelper.convertToStringList(disabledDateTimes));
 		args.putBoolean(CaldroidFragment.ENABLE_CLICK_ON_DISABLED_DATES, false);
-		ArrayList<DateTime> alreadySelectedDateTimes = new ArrayList<DateTime>();
-		for (int i = 0; i < alreadySelectedDates.size(); i++) {
-			alreadySelectedDateTimes.add(CalendarHelper
-					.convertDateToDateTime(alreadySelectedDates.get(i)));
+		caldroidFragment.setArguments(args);
+
+		if (event != null) {
+			// this.alreadySelectedDates = event.getHostSelectedDates();
+
+			for (int i = 0; i < hostDates.size(); i++) {
+				caldroidFragment.setBackgroundResourceForDate(R.color.blue, event
+						.getHostSelectedDates().get(i));
+				caldroidFragment.setTextColorForDate(R.color.white, event
+						.getHostSelectedDates().get(i));
+
+			}
+			// setting event title
+			EditText etEventTitle = (EditText) findViewById(R.id.etEventTitle);
+			etEventTitle.setText(event.getEventTitle());
+			
 		}
 
-		args.putStringArrayList(CaldroidFragment.SELECTED_DATES,
-				CalendarHelper.convertToStringList(alreadySelectedDateTimes));
-		//
-
-		caldroidFragment.setArguments(args);
 		FragmentTransaction t = getSupportFragmentManager().beginTransaction();
 		t.replace(R.id.calendar1, caldroidFragment);
 		t.commit();
-
+		
+		
 		final CaldroidListener listener = new CaldroidListener() {
 
 			@Override
@@ -142,18 +187,24 @@ public class CalendarActivity extends FragmentActivity {
 						Toast.LENGTH_SHORT).show();
 
 				if (caldroidFragment != null) {
-					Log.i(TAG, "already selected dates: " + alreadySelectedDates);
-					if (alreadySelectedDates.contains(date)) {
+					Log.i(TAG, "whats in already selected dates: " + hostSelectedDates);
+					Log.i(TAG, "what's date: " + date);
+					if (inviteeSelectedDates.contains(date)) {
 						// then we have to unset the selection
-						caldroidFragment.setBackgroundResourceForDate(R.color.white, date);
-						caldroidFragment.setTextColorForDate(R.color.black, date);
-						alreadySelectedDates.remove(date);
-					} else { // we have to set the selection
 						caldroidFragment.setBackgroundResourceForDate(R.color.blue, date);
 						caldroidFragment.setTextColorForDate(R.color.white, date);
-						alreadySelectedDates.add(date);
+//						
+//						caldroidFragment.setBackgroundResourceForDate(R.color.white, date);
+//						caldroidFragment.setTextColorForDate(R.color.black, date);
+						inviteeSelectedDates.remove(date);
+					} else {
+						// we have to set the selection
+						caldroidFragment.setBackgroundResourceForDate(R.color.pink, date);
+						caldroidFragment.setTextColorForDate(R.color.white, date);
+						inviteeSelectedDates.add(date);
 					}
 					caldroidFragment.refreshView();
+					Log.i(TAG, "already selected dates: " + hostSelectedDates);
 				}
 
 			}
@@ -184,11 +235,64 @@ public class CalendarActivity extends FragmentActivity {
 		// Setup Caldroid
 		caldroidFragment.setCaldroidListener(listener);
 
-		// createNewEvent();
+	}
+
+	public ArrayList<DateTime> getDisabledDates(ArrayList<Date> hostDates,
+			Date minDate, Date maxDate) {
+		ArrayList<DateTime> disabledDateTimes = new ArrayList<DateTime>();
+		ArrayList<Date> disabledDates = getDatesBetweentMinAndMax(minDate, maxDate,
+				hostDates);
+		Log.i(TAG, "host datess: " + hostDates);
+		Log.i(TAG, "disabled dates: " + disabledDates);
+		// convert date to datetimes
+		
+		for (Iterator iterator = disabledDates.iterator(); iterator.hasNext();) {
+			Date date = (Date) iterator.next();
+			disabledDateTimes.add(CalendarHelper.convertDateToDateTime(date));
+
+		}
+		return disabledDateTimes;
+	}
+
+	private void editCreatedEvent() {
+		Log.i(TAG, "IN editCreatedEvent");
+		Event event = stubEvent();
+		add_or_update_event(event);
 
 	}
 
+	private Event stubEvent() {
+		// create a fake event here
+
+		Event e = new Event();
+		e.setEventTitle("abc");
+		e.setHost("Neha");
+		ArrayList<Date> dates = new ArrayList<Date>();
+		try {
+			Calendar cal = Calendar.getInstance();
+			dates.add(formatter.parse(formatter.format(cal.getTime())));
+			cal.add(Calendar.DATE, 2);
+			dates.add(formatter.parse(formatter.format(cal.getTime())));
+			cal.add(Calendar.DATE, 3);
+			dates.add(formatter.parse(formatter.format(cal.getTime())));
+			cal.add(Calendar.DATE, 4);
+			dates.add(formatter.parse(formatter.format(cal.getTime())));
+		} catch (ParseException e1) {
+			Log.e(TAG, "Whoops, problem parsing dates");
+			e1.printStackTrace();
+		}
+
+		e.setHostSelectedDates(dates);
+
+		return e;
+	}
+
 	private void createNewEvent() {
+		Log.i(TAG, "In createNewEvent");
+		add_or_update_event(null);
+	}
+
+	public void add_or_update_event(Event event) {
 		Bundle args = new Bundle();
 		Calendar cal = Calendar.getInstance();
 		args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
@@ -197,8 +301,22 @@ public class CalendarActivity extends FragmentActivity {
 		args.putBoolean(CaldroidFragment.SIX_WEEKS_IN_CALENDAR, true);
 		args.putString(CaldroidFragment.MIN_DATE, formatter.format(cal.getTime()));
 		args.putBoolean(CaldroidFragment.ENABLE_CLICK_ON_DISABLED_DATES, false);
-
 		caldroidFragment.setArguments(args);
+
+		if (event != null) {
+			this.hostSelectedDates = event.getHostSelectedDates();
+
+			for (int i = 0; i < event.getHostSelectedDates().size(); i++) {
+				caldroidFragment.setBackgroundResourceForDate(R.color.blue, event
+						.getHostSelectedDates().get(i));
+				caldroidFragment.setTextColorForDate(R.color.white, event
+						.getHostSelectedDates().get(i));
+
+			}
+			// setting event title
+			EditText etEventTitle = (EditText) findViewById(R.id.etEventTitle);
+			etEventTitle.setText(event.getEventTitle());
+		}
 
 		FragmentTransaction t = getSupportFragmentManager().beginTransaction();
 		t.replace(R.id.calendar1, caldroidFragment);
@@ -214,20 +332,21 @@ public class CalendarActivity extends FragmentActivity {
 						Toast.LENGTH_SHORT).show();
 
 				if (caldroidFragment != null) {
-
-					if (alreadySelectedDates.contains(date)) {
+					Log.i(TAG, "whats in already selected dates: " + hostSelectedDates);
+					Log.i(TAG, "what's date: " + date);
+					if (hostSelectedDates.contains(date)) {
 						// then we have to unset the selection
 						caldroidFragment.setBackgroundResourceForDate(R.color.white, date);
 						caldroidFragment.setTextColorForDate(R.color.black, date);
-						alreadySelectedDates.remove(date);
+						hostSelectedDates.remove(date);
 					} else {
 						// we have to set the selection
 						caldroidFragment.setBackgroundResourceForDate(R.color.blue, date);
 						caldroidFragment.setTextColorForDate(R.color.white, date);
-						alreadySelectedDates.add(date);
+						hostSelectedDates.add(date);
 					}
 					caldroidFragment.refreshView();
-					Log.i(TAG, "already selected dates: " + alreadySelectedDates);
+					Log.i(TAG, "already selected dates: " + hostSelectedDates);
 				}
 
 			}
@@ -257,6 +376,10 @@ public class CalendarActivity extends FragmentActivity {
 
 		// Setup Caldroid
 		caldroidFragment.setCaldroidListener(listener);
+		saveHostedEventDetails();
+	}
+
+	public void saveHostedEventDetails() {
 		Button done = (Button) findViewById(R.id.done_button);
 		done.setOnClickListener(new OnClickListener() {
 
@@ -265,7 +388,8 @@ public class CalendarActivity extends FragmentActivity {
 				// created a new event, so save the current user as host, and event
 				// details and selected dates and call new activity
 				Event event = new Event();
-				event.setHostSelectedDates(new ArrayList<Date>(alreadySelectedDates));
+				event.setHostSelectedDates(new ArrayList<Date>(hostSelectedDates));
+				Log.i(TAG, event.getHostSelectedDates().toString());
 				EditText eventTitle = (EditText) findViewById(R.id.etEventTitle);
 				if (eventTitle.getText() == null
 						|| eventTitle.getText().toString().isEmpty()) {
@@ -277,27 +401,26 @@ public class CalendarActivity extends FragmentActivity {
 				User user = User.getCurUser();
 
 				event.setHost(user.getName());
+				event.save();
+
+				// find out if event was saved
+
+				Event e = new Select().from(Event.class)
+						.where("EventTitle = ?", event.getEventTitle()).executeSingle();
+
+				Log.i(TAG, "what's event, you better save: " + e);
+
 				if (user.getEvents() == null) {
 					ArrayList<Event> events = new ArrayList<Event>();
 					user.setEvents(events);
 				}
-//				user.save();
-
-				
+				user.save();
 
 				// save to sql
-//				event.save();
-				if (user.getEvents() == null) {
-					ArrayList<Event> events = new ArrayList<Event>();
-					events.add(event);
-					user.setEvents(events);
 
-				} else {
-					user.getEvents().add(event);
-					// user.setEvents();
-				}
+				user.getEvents().add(event);
+				user.save();
 
-//				user.save();
 				Intent i = new Intent(CalendarActivity.this, ContactsActivity.class);
 				i.putExtra("event", event);
 				startActivity(i);
