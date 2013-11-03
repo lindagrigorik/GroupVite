@@ -1,13 +1,15 @@
 package com.groupvite.models;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-
-@Table(name = "Users")
+import com.facebook.model.GraphUser;
+@Table(name ="Users")
 public class User extends Model implements Serializable {
 	/**
 	 * 
@@ -16,12 +18,32 @@ public class User extends Model implements Serializable {
 	@Column(name = "Events")
 	private List<Event> events;
 	@Column(name = "UserId")
-	private long userId;
+	private String id;
 	@Column(name = "Username")
 	private String name;
+	
+	private String picUrl;
+	
+	private String parseObjectId;
+	
+	// hardcoded parse ids. do not change.
+	private static final Map<String, String> facebookToParseId = new HashMap<String, String>();
+	static {
+		facebookToParseId.put("122611373", "RGqPKgqFLu"); // Linda Yang
+		facebookToParseId.put("821699189", "158z8rfcjR"); // Neha Karajgikar
+		facebookToParseId.put("712153", "dNC2k9HgKO"); // Subha Gollakota
+	}
 
 	// need to add more fields depending on what we get back from Facebook
 	public User() {
+	}
+	
+	public User(String id, String name) {
+		this.id = id;
+		this.name = name;
+		this.picUrl = buildPicUrl();
+		
+		this.parseObjectId = facebookToParseId.get(this.id);
 	}
 
 	public List<Event> getEvents() {
@@ -33,12 +55,12 @@ public class User extends Model implements Serializable {
 		this.events = events;
 	}
 
-	public long getUserId() {
-		return userId;
+	public String getUserId() {
+		return id;
 	}
 
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setUserId(String id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -48,13 +70,29 @@ public class User extends Model implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public String getPicUrl() {
+		return this.picUrl;
+	}
+	
+	public String getParseId() {
+		return this.parseObjectId;
+	}
 
 	public static User getCurUser() {
 		User u = new User();
 		u.setName("Neha");
-		u.setUserId(123);
+		u.setUserId("123");
 		return u;
 	}
+	
+    private String buildPicUrl() {
+    	return "http://graph.facebook.com/" + this.id + "/picture";
+    }
+    
+    public static User fromGraphUser(GraphUser user) {
+    	return new User(user.getId(), user.getName());
+    }
 
 	public String toString() {
 		return "name is:" + this.getName() + " userId: " + this.getUserId()

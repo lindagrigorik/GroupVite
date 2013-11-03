@@ -6,12 +6,12 @@ import java.util.Collection;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.facebook.Session;
@@ -19,21 +19,28 @@ import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.parse.ParseObject;
+import com.groupvite.models.User;
+
 
 public class ContactsActivity extends Activity {   
 	private static final int PICK_FRIENDS_ACTIVITY = 1;
 	private Button pickFriendsButton;
 	private UiLifecycleHelper lifecycleHelper;
 	boolean pickFriendsWhenSessionOpened;
-	private TextView resultsTextView;
+	
+	private ListView lvContacts;
+	private ContactsAdapter contactsAdapter;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.activity_contacts);
     	
+    	lvContacts = (ListView) findViewById(R.id.lvContacts);
+    	contactsAdapter = new ContactsAdapter(getApplicationContext(), new ArrayList<User>());
+    	lvContacts.setAdapter(contactsAdapter);
+    	
     	pickFriendsButton = (Button) findViewById(R.id.btnAddContacts);
-    	resultsTextView = (TextView) findViewById(R.id.resultsTextView);
     	pickFriendsButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick(View v) {
     			onClickPickFriends();
@@ -92,22 +99,22 @@ public class ContactsActivity extends Activity {
     }
 
     private void displaySelectedFriends(int resultCode) {
-        String results = "";
         GroupViteApp application = (GroupViteApp) getApplication();
 
         Collection<GraphUser> selection = application.getSelectedUsers();
+        ArrayList<User> users = new ArrayList<User>();
         if (selection != null && selection.size() > 0) {
-            ArrayList<String> names = new ArrayList<String>();
             for (GraphUser user : selection) {
-                names.add(user.getName());
+                users.add(User.fromGraphUser(user));
+                Log.d("SUBHA", "ID : " + user.getId());
             }
-            results = TextUtils.join(", ", names);
-        } else {
-            results = "<No friends selected>";
         }
-
-        resultsTextView.setText(results);
+        
+        contactsAdapter.clear();
+        contactsAdapter.addAll(users);
     }
+    
+
 
     private void onClickPickFriends() {
         startPickFriendsActivity();

@@ -8,35 +8,38 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ContactsActivity" >
 
-    <EditText
-        android:id="@+id/etMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="144dp"
-        android:background="@drawable/border"
-        android:ems="10"
-        android:gravity="top|left"
-        android:hint="@string/message"
-        android:inputType="textMultiLine"
-        android:lines="10" />
-
     <Button
         android:id="@+id/btnAddContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/etMessage"
         android:layout_alignParentTop="true"
-        android:text="Add Contacts" />
+        android:text="Choose Contacts" />
 
-    <TextView
-        android:id="@+id/resultsTextView"
+    <EditText
+        android:id="@+id/etMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btnAddContacts"
-        android:layout_alignRight="@+id/etMessage"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:gravity="top|left"
+        android:hint="@string/message"
+        android:inputType="textMultiLine"
+        android:lines="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <ListView
+        android:id="@+id/lvContacts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_below="@+id/btnAddContacts"
-        android:text="TextView" />
+        android:layout_above="@+id/etMessage"
+        android:numColumns="3" >
+    </ListView>
 
 </RelativeLayout>
