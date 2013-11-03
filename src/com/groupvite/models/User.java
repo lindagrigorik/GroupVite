@@ -6,7 +6,8 @@ import java.util.List;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-@Table(name ="Users")
+
+@Table(name = "Users")
 public class User extends Model implements Serializable {
 	/**
 	 * 
@@ -24,7 +25,8 @@ public class User extends Model implements Serializable {
 	}
 
 	public List<Event> getEvents() {
-		return events;
+		return this.events;
+//		return getMany(Event.class, "User");
 	}
 
 	public void setEvents(List<Event> events) {
@@ -52,6 +54,11 @@ public class User extends Model implements Serializable {
 		u.setName("Neha");
 		u.setUserId(123);
 		return u;
+	}
+
+	public String toString() {
+		return "name is:" + this.getName() + " userId: " + this.getUserId()
+				+ " events are: " + this.getEvents();
 	}
 
 }
