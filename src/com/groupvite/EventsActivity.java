@@ -52,6 +52,8 @@ public class EventsActivity extends Activity {
 								User user = User.fromGraphUser(graphUser);
 								ParseClient.populateUser(user);
 								
+								((GroupViteApp) getApplication()).setCurrentUser(user);
+								
 								Toast.makeText(getApplicationContext(),
 										"Welcome " + user.getName() +  "!", Toast.LENGTH_SHORT).show();
 							}

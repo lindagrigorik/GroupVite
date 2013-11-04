@@ -4,8 +4,11 @@ import java.util.Collection;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.facebook.model.GraphUser;
+import com.groupvite.models.Event;
+import com.groupvite.models.User;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -18,7 +21,8 @@ import com.parse.PushService;
 public class GroupViteApp extends Application {
 	private static Context context;
     private Collection<GraphUser> selectedUsers;
-
+    private User currentUser;
+    private Event currentEvent;
 	
     @Override
     public void onCreate() {
@@ -47,5 +51,22 @@ public class GroupViteApp extends Application {
 
     public void setSelectedUsers(Collection<GraphUser> selectedUsers) {
         this.selectedUsers = selectedUsers;
+    }
+    
+    public User getCurrentUser() {
+    	return this.currentUser;
+    }
+    
+    public Event getCurrentEvent() {
+    	return this.currentEvent;
+    }
+    
+    public void setCurrentEvent(Event e) {
+    	Log.d("SUBHA", "saving current event as :" + e);
+    	this.currentEvent = e;
+    }
+    
+    public void setCurrentUser(User user) {
+    	this.currentUser = user;
     }
 }

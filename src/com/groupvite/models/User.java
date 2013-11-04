@@ -70,13 +70,6 @@ public class User implements Serializable {
 	public String getParseId() {
 		return this.parseObjectId;
 	}
-
-	public static User getCurUser() {
-		User u = new User();
-		u.setName("Neha");
-		u.setUserId("123");
-		return u;
-	}
 	
     private String buildPicUrl() {
     	return "http://graph.facebook.com/" + this.id + "/picture";
