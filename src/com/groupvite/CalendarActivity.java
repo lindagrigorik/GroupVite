@@ -78,9 +78,9 @@ public class CalendarActivity extends FragmentActivity {
 		if (operation == null) {
 			Log.e(TAG, "Remember to pass in the operation!!");
 			Log.i(TAG, "Defaulting to whatever we want for testing");
-			// operation = "ADD_NEW_EVENT";
+			 operation = "ADD_NEW_EVENT";
 			// operation = "EDIT_CREATED_EVENT";
-			operation = "RESPOND_TO_INVITE";
+			//operation = "RESPOND_TO_INVITE";
 		}
 		switch (Operation.valueOf(operation)) {
 		case ADD_NEW_EVENT:
