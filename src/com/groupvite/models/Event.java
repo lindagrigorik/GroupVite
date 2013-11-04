@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class Event implements Serializable {
 	/**
@@ -16,6 +17,7 @@ public class Event implements Serializable {
 	private User host;
 	private HashMap<User, InviteeResponse> inviteeResponseMap;
 	private Date finalSelectedDay;
+	private List<User> invitedUsers;
 
 	public Event() {
 	}
@@ -43,6 +45,10 @@ public class Event implements Serializable {
 	public void setHost(User host) {
 		this.host = host;
 	}
+	
+	public void setInvitedUsers(ArrayList<User> invitedUsers) {
+		this.invitedUsers = invitedUsers;
+	}
 
 	public Date getFinalSelectedDay() {
 		return finalSelectedDay;
@@ -55,6 +61,15 @@ public class Event implements Serializable {
 	public String toString() {
 		return this.eventTitle + "hosted by: " + this.host
 				+ " who selected the following dates: " + this.hostSelectedDates;
+	}
+	
+	public List<String> getInvitedUsersParseIds() {
+		List<String> results = new ArrayList<String>();
+		for (User u : this.invitedUsers) {
+			results.add(u.getParseId());
+		}
+		
+		return results;
 	}
 
 	public HashMap<User, InviteeResponse> getInviteeResponseMap() {

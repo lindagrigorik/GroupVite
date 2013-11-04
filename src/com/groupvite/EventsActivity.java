@@ -1,8 +1,17 @@
 package com.groupvite;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -12,16 +21,13 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseFacebookUtils;
-import com.parse.ParseUser;
 import com.groupvite.models.User;
 import com.groupvite.util.ParseClient;
 
 
 public class EventsActivity extends Activity {
 
+ 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,6 +57,8 @@ public class EventsActivity extends Activity {
 							if (graphUser != null) {
 								User user = User.fromGraphUser(graphUser);
 								ParseClient.populateUser(user);
+								
+								((GroupViteApp) getApplication()).setCurrentUser(user);
 								
 								Toast.makeText(getApplicationContext(),
 										"Welcome " + user.getName() +  "!", Toast.LENGTH_SHORT).show();

@@ -19,7 +19,9 @@ import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.parse.ParseObject;
+import com.groupvite.models.Event;
 import com.groupvite.models.User;
+import com.groupvite.util.ParseClient;
 
 
 public class ContactsActivity extends Activity {   
@@ -112,9 +114,17 @@ public class ContactsActivity extends Activity {
         
         contactsAdapter.clear();
         contactsAdapter.addAll(users);
+        
+        // propagate to the event
+        Event e = ((GroupViteApp) getApplication()).getCurrentEvent();
+        if (e == null) {
+        	Log.d("SUBHA", " EVENT IS NULL. ");
+        	return;
+        }
+        
+        e.setInvitedUsers(users);
+        ((GroupViteApp) getApplication()).setCurrentEvent(e);
     }
-    
-
 
     private void onClickPickFriends() {
         startPickFriendsActivity();
@@ -134,9 +144,8 @@ public class ContactsActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menu) {
-	Toast.makeText(this.getBaseContext(), "SEND", Toast.LENGTH_SHORT).show();
-	ParseObject contacts = new ParseObject("contacts");
-	
-	return false;
+		Toast.makeText(this.getBaseContext(), "SEND", Toast.LENGTH_SHORT).show();
+		ParseClient.createEvent(((GroupViteApp) getApplication()).getCurrentEvent());
+		return false;
     }
 }

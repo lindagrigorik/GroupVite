@@ -42,7 +42,7 @@ public class CalendarActivity extends FragmentActivity {
 	// CalendarPickerView calendar;
 	private CaldroidFragment caldroidFragment;
 	EditText eventTitle;
-	Event event;
+	private Event event;
 	// final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
 	final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -78,7 +78,7 @@ public class CalendarActivity extends FragmentActivity {
 		if (operation == null) {
 			Log.e(TAG, "Remember to pass in the operation!!");
 			Log.i(TAG, "Defaulting to whatever we want for testing");
-			 operation = "ADD_NEW_EVENT";
+			operation = "ADD_NEW_EVENT";
 			// operation = "EDIT_CREATED_EVENT";
 			//operation = "RESPOND_TO_INVITE";
 		}
@@ -250,9 +250,9 @@ public class CalendarActivity extends FragmentActivity {
 				// details and selected dates and call new activity
 				HashMap<User, InviteeResponse> inviteeResponseMap = event
 						.getInviteeResponseMap();
-				inviteeResponseMap.put(User.getCurUser(),new InviteeResponse());
-				InviteeResponse inviteeResponse = inviteeResponseMap.get(User
-						.getCurUser());
+				User currentUser = ((GroupViteApp)getApplication()).getCurrentUser();
+				inviteeResponseMap.put(currentUser,new InviteeResponse());
+				InviteeResponse inviteeResponse = inviteeResponseMap.get(currentUser);
 				HashMap<Date, Response> responseMap = new HashMap<Date, Response>();
 				for (int i = 0; i < hostSelectedDates.size(); i++) {
 					if (inviteeSelectedDates.contains(hostSelectedDates.get(i))) {
@@ -306,10 +306,7 @@ public class CalendarActivity extends FragmentActivity {
 
 		Event e = new Event();
 		e.setEventTitle("abc");
-		User user = new User();
-		user.setName("Neha");
-		user.setUserId("123");
-		e.setHost(user);
+		e.setHost(((GroupViteApp)getApplication()).getCurrentUser());
 		ArrayList<Date> dates = new ArrayList<Date>();
 		try {
 			Calendar cal = Calendar.getInstance();
@@ -428,6 +425,7 @@ public class CalendarActivity extends FragmentActivity {
 
 			@Override
 			public void onClick(View v) {
+				Log.d("SUBHA.", "inside done on click method.");
 				// created a new event, so save the current user as host, and event
 				// details and selected dates and call new activity
 				Event event = new Event();
@@ -441,20 +439,20 @@ public class CalendarActivity extends FragmentActivity {
 					return;
 				}
 				event.setEventTitle(eventTitle.getText().toString());
-				User user = User.getCurUser();
+				User user = ((GroupViteApp) getApplication()).getCurrentUser();
 
 				event.setHost(user);
 				event.setInviteeResponseMap(new HashMap<User, InviteeResponse>());
-				// find out if event was saved
+				
+				// write the event to global
+				Log.d("SUBHA", "saving event to global");
+				((GroupViteApp) getApplication()).setCurrentEvent(event);
 
-			
 
 				if (user.getEvents() == null) {
 					ArrayList<Event> events = new ArrayList<Event>();
 					user.setEvents(events);
 				}
-
-				// save to sql
 
 				user.getEvents().add(event);
 			

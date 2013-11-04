@@ -22,9 +22,9 @@ public class User implements Serializable {
 	// hardcoded parse ids. do not change.
 	private static final Map<String, String> facebookToParseId = new HashMap<String, String>();
 	static {
-		facebookToParseId.put("122611373", "RGqPKgqFLu"); // Linda Yang
-		facebookToParseId.put("821699189", "158z8rfcjR"); // Neha Karajgikar
-		facebookToParseId.put("712153", "dNC2k9HgKO"); // Subha Gollakota
+		facebookToParseId.put("122611373", "ZSqku1AjeQ"); // Linda Yang
+		facebookToParseId.put("821699189", "YsF1NkKCo5"); // Neha Karajgikar
+		facebookToParseId.put("712153", "WJq4BCOfgL"); // Subha Gollakota
 	}
 
 	// need to add more fields depending on what we get back from Facebook
@@ -70,13 +70,6 @@ public class User implements Serializable {
 	public String getParseId() {
 		return this.parseObjectId;
 	}
-
-	public static User getCurUser() {
-		User u = new User();
-		u.setName("Neha");
-		u.setUserId("123");
-		return u;
-	}
 	
     private String buildPicUrl() {
     	return "http://graph.facebook.com/" + this.id + "/picture";
@@ -87,8 +80,9 @@ public class User implements Serializable {
     }
 
 	public String toString() {
-		return "name is:" + this.getName() + " userId: " + this.getUserId()
-				+ " events are: " + this.getEvents();
+		return "name is:" + this.getName() + " userId: " + this.getUserId();
+				/*+ " events are: " + this.getEvents()*/
+		// no events cuz it's a circular dep. if you need it, print just the event ids.
 	}
 
 }
