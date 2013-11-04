@@ -250,9 +250,9 @@ public class CalendarActivity extends FragmentActivity {
 				// details and selected dates and call new activity
 				HashMap<User, InviteeResponse> inviteeResponseMap = event
 						.getInviteeResponseMap();
-				inviteeResponseMap.put(User.getCurUser(),new InviteeResponse());
-				InviteeResponse inviteeResponse = inviteeResponseMap.get(User
-						.getCurUser());
+				User currentUser = ((GroupViteApp)getApplication()).getCurrentUser();
+				inviteeResponseMap.put(currentUser,new InviteeResponse());
+				InviteeResponse inviteeResponse = inviteeResponseMap.get(currentUser);
 				HashMap<Date, Response> responseMap = new HashMap<Date, Response>();
 				for (int i = 0; i < hostSelectedDates.size(); i++) {
 					if (inviteeSelectedDates.contains(hostSelectedDates.get(i))) {
@@ -443,22 +443,16 @@ public class CalendarActivity extends FragmentActivity {
 
 				event.setHost(user);
 				event.setInviteeResponseMap(new HashMap<User, InviteeResponse>());
-				event.save();
 				
 				// write the event to global
 				Log.d("SUBHA", "saving event to global");
 				((GroupViteApp) getApplication()).setCurrentEvent(event);
 
-				// find out if event was saved
-
-			
 
 				if (user.getEvents() == null) {
 					ArrayList<Event> events = new ArrayList<Event>();
 					user.setEvents(events);
 				}
-
-				// save to sql
 
 				user.getEvents().add(event);
 			

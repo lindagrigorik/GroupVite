@@ -16,7 +16,7 @@ public class Event implements Serializable {
 	private ArrayList<Date> hostSelectedDates;
 	private User host;
 	private HashMap<User, InviteeResponse> inviteeResponseMap;
-	@Column(name = "FinalSelectedDay")
+	private Date finalSelectedDay;
 	private List<User> invitedUsers;
 
 	public Event() {

@@ -1,5 +1,6 @@
 package com.groupvite.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.util.Log;
@@ -13,7 +14,7 @@ import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 public class ParseClient {
-	private static List<ParseObject> recentEvents;
+	private static List<ParseObject> recentEvents = new ArrayList<ParseObject>();
 	
 	// currently this does nothing but eventually it should populate the user's "events"
 	public static void populateUser(User user) {

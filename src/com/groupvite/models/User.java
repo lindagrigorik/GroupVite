@@ -80,8 +80,9 @@ public class User implements Serializable {
     }
 
 	public String toString() {
-		return "name is:" + this.getName() + " userId: " + this.getUserId()
-				+ " events are: " + this.getEvents();
+		return "name is:" + this.getName() + " userId: " + this.getUserId();
+				/*+ " events are: " + this.getEvents()*/
+		// no events cuz it's a circular dep. if you need it, print just the event ids.
 	}
 
 }
