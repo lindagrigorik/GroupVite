@@ -81,7 +81,7 @@ public class GroupViteApp extends Application {
     }
     
     public void setCurrentEvent(Event e) {
-    	Log.d("SUBHA", "saving current event as :" + e);
+    	Log.d("PARSE", "saving current event as :" + e);
     	this.currentEvent = e;
     }
     
