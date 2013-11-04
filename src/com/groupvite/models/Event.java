@@ -63,13 +63,8 @@ public class Event implements Serializable {
 				+ " who selected the following dates: " + this.hostSelectedDates;
 	}
 	
-	public List<String> getInvitedUsersParseIds() {
-		List<String> results = new ArrayList<String>();
-		for (User u : this.invitedUsers) {
-			results.add(u.getParseId());
-		}
-		
-		return results;
+	public List<User> getInvitedUsers() {
+		return this.invitedUsers;
 	}
 
 	public HashMap<User, InviteeResponse> getInviteeResponseMap() {

@@ -39,6 +39,7 @@ import com.roomorama.caldroid.CalendarHelper;
 @SuppressLint("SimpleDateFormat")
 public class CalendarActivity extends FragmentActivity {
 	protected static final String TAG = "GroupVite";
+	protected static final String PARSE = "Parse";
 	// CalendarPickerView calendar;
 	private CaldroidFragment caldroidFragment;
 	EditText eventTitle;
@@ -425,7 +426,7 @@ public class CalendarActivity extends FragmentActivity {
 
 			@Override
 			public void onClick(View v) {
-				Log.d("SUBHA.", "inside done on click method.");
+				Log.d(PARSE, "inside done on click method.");
 				// created a new event, so save the current user as host, and event
 				// details and selected dates and call new activity
 				Event event = new Event();
@@ -445,7 +446,7 @@ public class CalendarActivity extends FragmentActivity {
 				event.setInviteeResponseMap(new HashMap<User, InviteeResponse>());
 				
 				// write the event to global
-				Log.d("SUBHA", "saving event to global");
+				Log.d("PARSE", "saving event to global");
 				((GroupViteApp) getApplication()).setCurrentEvent(event);
 
 

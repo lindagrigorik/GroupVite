@@ -26,6 +26,7 @@ import com.groupvite.util.ParseClient;
 
 public class ContactsActivity extends Activity {   
 	private static final int PICK_FRIENDS_ACTIVITY = 1;
+	protected static final String PARSE = "Parse";
 	private Button pickFriendsButton;
 	private UiLifecycleHelper lifecycleHelper;
 	boolean pickFriendsWhenSessionOpened;
@@ -108,7 +109,7 @@ public class ContactsActivity extends Activity {
         if (selection != null && selection.size() > 0) {
             for (GraphUser user : selection) {
                 users.add(User.fromGraphUser(user));
-                Log.d("SUBHA", "ID : " + user.getId());
+                Log.d("PARSE", "ID : " + user.getId());
             }
         }
         
@@ -118,7 +119,7 @@ public class ContactsActivity extends Activity {
         // propagate to the event
         Event e = ((GroupViteApp) getApplication()).getCurrentEvent();
         if (e == null) {
-        	Log.d("SUBHA", " EVENT IS NULL. ");
+        	Log.d("PARSE", " EVENT IS NULL. ");
         	return;
         }
         
