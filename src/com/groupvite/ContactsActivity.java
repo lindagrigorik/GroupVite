@@ -147,6 +147,10 @@ public class ContactsActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem menu) {
 		Toast.makeText(this.getBaseContext(), "SEND", Toast.LENGTH_SHORT).show();
 		ParseClient.createEvent(((GroupViteApp) getApplication()).getCurrentEvent());
-		return false;
+		
+		Intent intent = new Intent(this, EventsActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
+		return true;
     }
 }
