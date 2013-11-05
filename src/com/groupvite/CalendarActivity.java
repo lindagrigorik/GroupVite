@@ -57,11 +57,12 @@ public class CalendarActivity extends FragmentActivity {
 		setContentView(R.layout.activity_calendar);
 
 		caldroidFragment = new CaldroidFragment();
+		//
+		// SharedPreferences pref = PreferenceManager
+		// .getDefaultSharedPreferences(this);
+		// String username = pref.getString("name", "n/a");
 
-		SharedPreferences pref = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		String username = pref.getString("name", "n/a");
-		Log.i(TAG, "username is what now? " + username);
+		// Log.i(TAG, "username is what now? " + username);
 
 		// if (savedInstanceState != null) {
 		// caldroidFragment.restoreStatesFromKey(savedInstanceState,
@@ -75,13 +76,16 @@ public class CalendarActivity extends FragmentActivity {
 		// * event to edit activity (both host + invitee)
 
 		Intent i = getIntent();
+		User currentUser = (User) i.getSerializableExtra("currentUser");
 		String operation = i.getStringExtra("operation");
 		if (operation == null) {
 			Log.e(TAG, "Remember to pass in the operation!!");
 			Log.i(TAG, "Defaulting to whatever we want for testing");
 			operation = "ADD_NEW_EVENT";
 			// operation = "EDIT_CREATED_EVENT";
-			//operation = "RESPOND_TO_INVITE";
+			// operation = "RESPOND_TO_INVITE";
+		} else {
+			Log.i(TAG, "Operation is : " + operation);
 		}
 		switch (Operation.valueOf(operation)) {
 		case ADD_NEW_EVENT:
@@ -91,17 +95,20 @@ public class CalendarActivity extends FragmentActivity {
 		case RESPOND_TO_INVITE:
 			// get from database, the event details
 			// show list of preselected dates that you can choose to
-			respondToInvite();
+			Event ev = (Event) i.getSerializableExtra("event");
+			respondToInvite(ev);
 			break;
 		case EDIT_CREATED_EVENT:
 			// get from database, the event details
 			// show calendar
-			editCreatedEvent();
+			Event e = (Event) i.getSerializableExtra("event");
+			editCreatedEvent(e);
 			break;
 		case EDIT_RESPONDED_EVENT:
 			// get from database, the event details, show calendar with preselected
 			// dates
 			editRespondedEvent();
+
 			break;
 
 		default:
@@ -139,10 +146,10 @@ public class CalendarActivity extends FragmentActivity {
 		return dates;
 	}
 
-	private void respondToInvite() {
+	private void respondToInvite(Event e) {
 		Log.i(TAG, "In respondToInvite");
 		inviteeSelectedDates = new ArrayList<Date>();
-		event = stubEvent();
+		event = e;
 		ArrayList<Date> hostDates = event.getHostSelectedDates();
 		Collections.sort(hostDates);
 		hostSelectedDates = hostDates;
@@ -251,8 +258,8 @@ public class CalendarActivity extends FragmentActivity {
 				// details and selected dates and call new activity
 				HashMap<User, InviteeResponse> inviteeResponseMap = event
 						.getInviteeResponseMap();
-				User currentUser = ((GroupViteApp)getApplication()).getCurrentUser();
-				inviteeResponseMap.put(currentUser,new InviteeResponse());
+				User currentUser = ((GroupViteApp) getApplication()).getCurrentUser();
+				inviteeResponseMap.put(currentUser, new InviteeResponse());
 				InviteeResponse inviteeResponse = inviteeResponseMap.get(currentUser);
 				HashMap<Date, Response> responseMap = new HashMap<Date, Response>();
 				for (int i = 0; i < hostSelectedDates.size(); i++) {
@@ -295,9 +302,9 @@ public class CalendarActivity extends FragmentActivity {
 		return disabledDateTimes;
 	}
 
-	private void editCreatedEvent() {
+	private void editCreatedEvent(Event event) {
 		Log.i(TAG, "IN editCreatedEvent");
-		Event event = stubEvent();
+		// Event event = stubEvent();
 		add_or_update_event(event);
 
 	}
@@ -307,7 +314,7 @@ public class CalendarActivity extends FragmentActivity {
 
 		Event e = new Event();
 		e.setEventTitle("abc");
-		e.setHost(((GroupViteApp)getApplication()).getCurrentUser());
+		e.setHost(((GroupViteApp) getApplication()).getCurrentUser());
 		ArrayList<Date> dates = new ArrayList<Date>();
 		try {
 			Calendar cal = Calendar.getInstance();
@@ -345,8 +352,29 @@ public class CalendarActivity extends FragmentActivity {
 		caldroidFragment.setArguments(args);
 
 		if (event != null) {
+			//TODO: remove this stub after Subha finishes
+			if(event.getHostSelectedDates() == null)
+			{
+				ArrayList<Date> dates = new ArrayList<Date>();
+				try {
+					Calendar cl = Calendar.getInstance();
+					dates.add(formatter.parse(formatter.format(cl.getTime())));
+					cl.add(Calendar.DATE, 2);
+					dates.add(formatter.parse(formatter.format(cl.getTime())));
+					cl.add(Calendar.DATE, 3);
+					dates.add(formatter.parse(formatter.format(cl.getTime())));
+					cl.add(Calendar.DATE, 4);
+					dates.add(formatter.parse(formatter.format(cl.getTime())));
+				} catch (ParseException e1) {
+					Log.e(TAG, "Whoops, problem parsing dates");
+					e1.printStackTrace();
+				}
+
+				event.setHostSelectedDates(dates);
+			}
 			this.hostSelectedDates = event.getHostSelectedDates();
 
+			
 			for (int i = 0; i < event.getHostSelectedDates().size(); i++) {
 				caldroidFragment.setBackgroundResourceForDate(R.color.blue, event
 						.getHostSelectedDates().get(i));
@@ -444,11 +472,10 @@ public class CalendarActivity extends FragmentActivity {
 
 				event.setHost(user);
 				event.setInviteeResponseMap(new HashMap<User, InviteeResponse>());
-				
+
 				// write the event to global
 				Log.d("PARSE", "saving event to global");
 				((GroupViteApp) getApplication()).setCurrentEvent(event);
-
 
 				if (user.getEvents() == null) {
 					ArrayList<Event> events = new ArrayList<Event>();
@@ -456,7 +483,7 @@ public class CalendarActivity extends FragmentActivity {
 				}
 
 				user.getEvents().add(event);
-			
+
 				Intent i = new Intent(CalendarActivity.this, ContactsActivity.class);
 				i.putExtra("event", event);
 				startActivity(i);
