@@ -1,19 +1,14 @@
 package com.groupvite;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.Signature;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.facebook.Request;
@@ -21,13 +16,16 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
+import com.groupvite.models.Event;
 import com.groupvite.models.User;
 import com.groupvite.util.ParseClient;
 
 
 public class EventsActivity extends Activity {
+	
+	private ListView lvEvents;
+	private EventsAdapter eventsAdapter;
 
- 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,6 +41,9 @@ public class EventsActivity extends Activity {
                     }
 		  });*/
 		
+		lvEvents = (ListView) findViewById(R.id.lvEvents);
+    	eventsAdapter = new EventsAdapter(getApplicationContext(), new ArrayList<Event>());
+    	lvEvents.setAdapter(eventsAdapter);
 		  
 		// start Facebook login
 		Session.openActiveSession(this, true, new Session.StatusCallback() {
@@ -59,6 +60,13 @@ public class EventsActivity extends Activity {
 								ParseClient.populateUser(user);
 								
 								((GroupViteApp) getApplication()).setCurrentUser(user);
+								
+								// fake stubbing of events.
+								// Linda, remove this when you add the grabbing of events from parse.
+								Event fakeEvent = new Event();
+								fakeEvent.setEventTitle("Fake Event.");
+								fakeEvent.setHost(user);
+								eventsAdapter.add(fakeEvent);
 								
 								Toast.makeText(getApplicationContext(),
 										"Welcome " + user.getName() +  "!", Toast.LENGTH_SHORT).show();

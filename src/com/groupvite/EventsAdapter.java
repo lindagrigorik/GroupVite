@@ -10,13 +10,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.groupvite.models.User;
+import com.groupvite.models.Event;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class ContactsAdapter extends ArrayAdapter<User> {
+public class EventsAdapter extends ArrayAdapter<Event> {
 
-	public ContactsAdapter(Context context, List<User> users) {
-		super(context, 0, users);
+	public EventsAdapter(Context context, List<Event> events) {
+		super(context, 0, events);
 	}
 	
 	@Override
@@ -27,12 +27,12 @@ public class ContactsAdapter extends ArrayAdapter<User> {
 			view = (View) inflater.inflate(R.layout.profile_pic_item, null);
 		}
 		
-		User user = getItem(position);		
+		Event event = getItem(position);		
 		ImageView imageView = (ImageView) view.findViewById(R.id.ivProfile);
-		ImageLoader.getInstance().displayImage(user.getPicUrl(), imageView);
+		ImageLoader.getInstance().displayImage(event.getHost().getPicUrl(), imageView);
 		
 		TextView nameView = (TextView) view.findViewById(R.id.tvName);
-		nameView.setText(user.getName());
+		nameView.setText(event.getEventTitle());
 		
 		return view;
 	}
