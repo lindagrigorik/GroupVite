@@ -43,6 +43,16 @@ public class ParseClient {
 	    }
 	});
     }
+    
+    //set parse id of existing guser.
+    public static String createParseUser(User user){
+	ArrayList<User> currUser= new ArrayList<User>();
+	currUser.add(user);
+	LinkedList<String> id = (LinkedList<String>) ParseClient.ensureUsersExist(currUser);
+	user.setParseId(id.get(0));
+
+	return id.get(0);
+    }
 
     public static void createEvent(final Event event) {
 	if (event == null) {
@@ -56,6 +66,7 @@ public class ParseClient {
 		ParseObject parseEvent = new ParseObject("EventObject");
 		parseEvent.put("EventTitle", event.getEventTitle());
 		parseEvent.put("HostId", event.getHost().getParseId());
+		parseEvent.put("EventId", event.getEventId());
 		Collection<String> userIds = ensureUsersExist(event.getInvitedUsers());
 		parseEvent.addAll("InvitedUsers", userIds);
 
@@ -178,4 +189,48 @@ public class ParseClient {
 	    }
 	});
     }
+
+    public static ArrayList<Event> getUserEventsList(User user) {
+	ParseQuery<ParseObject> query = ParseQuery.getQuery("UserObject");
+	//Map<String, ArrayList<Event>> events = new HashMap<String, ArrayList<Event>>();
+	ArrayList<Event> events = new ArrayList<Event>();
+	ParseObject userObject;
+        try {
+	    userObject = query.get(user.getParseId());
+    	    List<String> eventIds = userObject.getList("HostedEvent");
+    	    Event event = new Event();
+    	    for (String eventId : eventIds){
+    		query = ParseQuery.getQuery("EventObject");
+    		ParseObject eventObject = query.get(eventId);
+    		//event.setEventId(Long.parseLong(eventObject.getString("eventId")));
+    		event.setEventTitle(eventObject.getString("EventTitle"));
+    		event.setHost(user);
+    		List<String> inviteeIds = eventObject.getList("InvitedUsers");
+    		ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
+    		event.setInvitedUsers(inviteeUsers);
+    		events.add(event);
+    	    }
+        } catch (ParseException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+        }
+	return events;
+    }
+    
+    private static ArrayList<User> createUsers(List<String> ids) throws ParseException {
+	ArrayList<User> invitees = new ArrayList<User>();
+	ParseQuery<ParseObject> query = ParseQuery.getQuery("UserObject");
+	for (String id : ids){
+	    ParseObject userObject = query.get(id); 
+	    User user = new User();
+	    user.setFacebookId(userObject.getString("fbId"));
+	    user.setName(userObject.getString("name"));
+	    user.setParseId(userObject.getString("ObjectId"));
+	    invitees.add(user);
+	}
+	return invitees;
+	
+    }
+    
+    
 }

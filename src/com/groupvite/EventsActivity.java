@@ -2,6 +2,7 @@ package com.groupvite;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
+import com.groupvite.models.Event;
 import com.groupvite.models.User;
 import com.groupvite.util.ParseClient;
 
@@ -57,7 +59,8 @@ public class EventsActivity extends Activity {
 							if (graphUser != null) {
 								User user = User.fromGraphUser(graphUser);
 								ParseClient.populateUser(user);
-								
+								//ParseClient.createParseUser(user);
+								ArrayList<Event> events = ParseClient.getUserEventsList(user);
 								((GroupViteApp) getApplication()).setCurrentUser(user);
 								
 								Toast.makeText(getApplicationContext(),
@@ -68,6 +71,9 @@ public class EventsActivity extends Activity {
 				}
 			}
 		});
+		
+		
+		
 		
 		/*Intent i = getIntent();
 		Event event = (Event) i.getSerializableExtra("event");
