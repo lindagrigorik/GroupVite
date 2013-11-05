@@ -198,8 +198,9 @@ public class ParseClient {
         try {
 	    userObject = query.get(user.getParseId());
     	    List<String> eventIds = userObject.getList("HostedEvent");
-    	    Event event = new Event();
+    	    Event event;
     	    for (String eventId : eventIds){
+    	    	event = new Event();
     		query = ParseQuery.getQuery("EventObject");
     		ParseObject eventObject = query.get(eventId);
     		//event.setEventId(Long.parseLong(eventObject.getString("eventId")));
