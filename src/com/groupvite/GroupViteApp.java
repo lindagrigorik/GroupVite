@@ -31,9 +31,7 @@ public class GroupViteApp extends Application {
         GroupViteApp.context = this;
         
         Parse.initialize(this, "XjzbnK5X5eBJAFJIm0sXFjM0lPDRJnKAWUQxFpC2", "qppHxLDmGFfF1k4vAsRWbCeJOoJR4ifZvLQ14Ysn"); 
-        //Parse.initialize(this, "5znRdifSaJ7N0QhFSXwbsKQspLiTD7QAGe7SEzb3", "4NJsZ3uQ8ow2w6Oxb2LQmdgu6pDXgc0kE9WnRbfo");
-        //Parse.initialize(this, "9jpzUMr1kXN9qO2dAZEPCRQbdbggxt6tK1MQpYaw", "7eJJgONOyB1DUoeyKBxyZDuzdmTEGp1dMLxl3uJV"); 
-
+        
         PushService.setDefaultPushCallback(this, EventsActivity.class);
         ParseInstallation.getCurrentInstallation().saveInBackground();
         

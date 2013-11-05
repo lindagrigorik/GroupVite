@@ -24,7 +24,8 @@ public class ParseClient {
     private static final ExecutorService parseExecutor = Executors.newSingleThreadExecutor();
 
     private static List<ParseObject> recentEvents = new ArrayList<ParseObject>();
-
+    protected static final String PARSE = "Parse";
+    
     // currently this does nothing but eventually it should populate the user's
     // "events"
     public static void populateUser(User user) {
@@ -32,12 +33,12 @@ public class ParseClient {
 	query.getInBackground(user.getParseId(), new GetCallback<ParseObject>() {
 	    public void done(ParseObject object, ParseException e) {
 		if (e == null) {
-		    Log.d("SUBHA", "name" + object.getString("name"));
-		    Log.d("SUBHA", "fbid" + object.getString("fbid"));
+		    Log.d(PARSE, "name" + object.getString("name"));
+		    Log.d(PARSE, "fbid" + object.getString("fbid"));
 		} else {
 		    // something went wrong
-		    Log.d("SUBHA", "something has gone wrong");
-		    Log.d("SUBHA", e.toString());
+		    Log.d(PARSE, "something has gone wrong");
+		    Log.d(PARSE, e.toString());
 		}
 	    }
 	});
@@ -45,7 +46,7 @@ public class ParseClient {
 
     public static void createEvent(final Event event) {
 	if (event == null) {
-	    Log.d("SUBHA", "parse client. event is null");
+	    Log.d(PARSE, "parse client. event is null");
 	    return;
 	}
 
@@ -68,7 +69,7 @@ public class ParseClient {
 			if (e == null) {
 			    updateEvent(index);
 			} else {
-			    Log.d("SUBHA", "something went wrong with save event in background");
+			    Log.d(PARSE, "something went wrong with save event in background");
 			}
 		    }
 		});
