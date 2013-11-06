@@ -66,7 +66,6 @@ public class ParseClient {
 		ParseObject parseEvent = new ParseObject("EventObject");
 		parseEvent.put("EventTitle", event.getEventTitle());
 		parseEvent.put("HostId", event.getHost().getParseId());
-		parseEvent.put("EventId", event.getEventId());
 		Collection<String> userIds = ensureUsersExist(event.getInvitedUsers());
 		parseEvent.addAll("InvitedUsers", userIds);
 
@@ -191,31 +190,52 @@ public class ParseClient {
     }
 
     public static ArrayList<Event> getUserEventsList(User user) {
-	ParseQuery<ParseObject> query = ParseQuery.getQuery("UserObject");
-	//Map<String, ArrayList<Event>> events = new HashMap<String, ArrayList<Event>>();
-	ArrayList<Event> events = new ArrayList<Event>();
-	ParseObject userObject;
+    	ParseQuery<ParseObject> query = ParseQuery.getQuery("UserObject");
+    	//Map<String, ArrayList<Event>> events = new HashMap<String, ArrayList<Event>>();
+    	ArrayList<Event> events = new ArrayList<Event>();
+    	ParseObject userObject;
         try {
-	    userObject = query.get(user.getParseId());
-    	    List<String> eventIds = userObject.getList("HostedEvent");
-    	    Event event;
-    	    for (String eventId : eventIds){
-    	    	event = new Event();
-    		query = ParseQuery.getQuery("EventObject");
-    		ParseObject eventObject = query.get(eventId);
-    		//event.setEventId(Long.parseLong(eventObject.getString("eventId")));
-    		event.setEventTitle(eventObject.getString("EventTitle"));
-    		event.setHost(user);
-    		List<String> inviteeIds = eventObject.getList("InvitedUsers");
-    		ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
-    		event.setInvitedUsers(inviteeUsers);
-    		events.add(event);
+        	userObject = query.get(user.getParseId());
+    	    List<String> hostedEventIds = userObject.getList("HostedEvent");
+    	    if (hostedEventIds != null) {
+				for (String eventId : hostedEventIds){
+					Event event = new Event();
+					query = ParseQuery.getQuery("EventObject");
+					ParseObject eventObject = query.get(eventId);
+					//event.setEventId(Long.parseLong(eventObject.getString("eventId")));
+					event.setEventTitle(eventObject.getString("EventTitle"));
+					event.setHost(user);
+					List<String> inviteeIds = eventObject.getList("InvitedUsers");
+					ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
+					event.setInvitedUsers(inviteeUsers);
+					events.add(event);
+				}
+    	    }
+    	    
+    	    List<String> invitedEventIds = userObject.getList("InvitedEvent");
+    	    Log.d("SUBHA", "invited event ids " + invitedEventIds);
+    	    if (invitedEventIds != null) {
+				for (String eventId : invitedEventIds) {
+					Event event = new Event();
+					query = ParseQuery.getQuery("EventObject");
+					ParseObject eventObject = query.get(eventId);
+					event.setEventTitle(eventObject.getString("EventTitle"));
+					String hostParseId = eventObject.getString("HostId");
+					
+					query = ParseQuery.getQuery("UserObject");
+					ParseObject hostObject = query.get(hostParseId);
+					event.setHost(User.fromParseObject(hostObject));
+					List<String> inviteeIds = eventObject.getList("InvitedUsers");
+					ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
+					event.setInvitedUsers(inviteeUsers);
+					events.add(event);
+				}
     	    }
         } catch (ParseException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
         }
-	return events;
+        return events;
     }
     
     private static ArrayList<User> createUsers(List<String> ids) throws ParseException {
