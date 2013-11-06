@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.parse.ParseObject;
+
 public class Event implements Serializable {
 	/**
 	 * 
@@ -32,6 +34,10 @@ public class Event implements Serializable {
 	
 	public void setEventParseId(String eventParseId) {
 		this.eventParseId = eventParseId;
+	}
+	
+	public String getEventParseId() {
+		return this.eventParseId;
 	}
 
 	public ArrayList<Date> getHostSelectedDates() {
@@ -97,5 +103,23 @@ public class Event implements Serializable {
 			inviteeResponseMap.put(user, inviteeResponse);
 		}
 	}
+	
+	public void populateInviteeResponseMap(ParseObject eventObject) {
+		for (User user : this.invitedUsers) {
+			initializeInviteeResponseForUser(user);
+			List<Date> yesDates = new ArrayList<Date>();
+			if (eventObject.has(user.getParseId())) {
+				HashMap<Date, Response> dateToResponse = this.inviteeResponseMap.get(user).getResponseMap();
+				for (Date hostDate : this.hostSelectedDates) {
+					if (yesDates.contains(hostDate)) {
+						dateToResponse.put(hostDate, Response.YES);
+					} else {
+						dateToResponse.put(hostDate, Response.NO);
+					}
+				}
+			}
+		}
+	}
+
 
 }
