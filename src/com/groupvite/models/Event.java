@@ -31,11 +31,11 @@ public class Event implements Serializable {
 	public void setEventTitle(String eventTitle) {
 		this.eventTitle = eventTitle;
 	}
-	
+
 	public void setEventParseId(String eventParseId) {
 		this.eventParseId = eventParseId;
 	}
-	
+
 	public String getEventParseId() {
 		return this.eventParseId;
 	}
@@ -55,7 +55,7 @@ public class Event implements Serializable {
 	public void setHost(User host) {
 		this.host = host;
 	}
-	
+
 	public void setInvitedUsers(ArrayList<User> invitedUsers) {
 		this.invitedUsers = invitedUsers;
 	}
@@ -70,9 +70,10 @@ public class Event implements Serializable {
 
 	public String toString() {
 		return this.eventTitle + "hosted by: " + this.host
-				+ " who selected the following dates: " + this.hostSelectedDates;
+				+ " who selected the following dates: " + this.hostSelectedDates
+				+ " invitee response map is: " + this.inviteeResponseMap;
 	}
-	
+
 	public List<User> getInvitedUsers() {
 		return this.invitedUsers;
 	}
@@ -85,7 +86,7 @@ public class Event implements Serializable {
 			HashMap<User, InviteeResponse> inviteeResponseMap) {
 		this.inviteeResponseMap = inviteeResponseMap;
 	}
-	
+
 	public void initializeInviteeResponseForUser(User user) {
 		if (this.getInviteeResponseMap() == null) {
 			HashMap<User, InviteeResponse> inviteeResponseMap = new HashMap<User, InviteeResponse>();
@@ -103,13 +104,20 @@ public class Event implements Serializable {
 			inviteeResponseMap.put(user, inviteeResponse);
 		}
 	}
-	
+
 	public void populateInviteeResponseMap(ParseObject eventObject) {
 		for (User user : this.invitedUsers) {
 			initializeInviteeResponseForUser(user);
 			List<Date> yesDates = new ArrayList<Date>();
+			List<Object> rawDates = eventObject.getList(user.getParseId());
+			if (rawDates != null && rawDates.size() > 0) {
+				for (Object date : rawDates) {
+					yesDates.add(new Date(Long.parseLong(date.toString())));
+				}
+			}
 			if (eventObject.has(user.getParseId())) {
-				HashMap<Date, Response> dateToResponse = this.inviteeResponseMap.get(user).getResponseMap();
+				HashMap<Date, Response> dateToResponse = this.inviteeResponseMap.get(
+						user).getResponseMap();
 				for (Date hostDate : this.hostSelectedDates) {
 					if (yesDates.contains(hostDate)) {
 						dateToResponse.put(hostDate, Response.YES);
@@ -120,6 +128,5 @@ public class Event implements Serializable {
 			}
 		}
 	}
-
 
 }
