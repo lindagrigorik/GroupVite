@@ -103,9 +103,14 @@ public class ContactsActivity extends Activity {
 
     private void displaySelectedFriends(int resultCode) {
         GroupViteApp application = (GroupViteApp) getApplication();
-
+       
         Collection<GraphUser> selection = application.getSelectedUsers();
         ArrayList<User> users = new ArrayList<User>();
+        
+        ArrayList<User> invitedUsers = (ArrayList<User>) application.getCurrentEvent().getInvitedUsers(); 
+        if (invitedUsers!= null && invitedUsers.size()>0){
+            users.addAll(invitedUsers);
+        }
         if (selection != null && selection.size() > 0) {
             for (GraphUser user : selection) {
                 users.add(User.fromGraphUser(user));

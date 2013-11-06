@@ -26,7 +26,7 @@ public class User implements Serializable {
     // hardcoded parse ids. do not change.
     private static final Map<String, String> facebookToParseId = new HashMap<String, String>();
     static {
-	facebookToParseId.put("122611373", "l5c08hMZaS"); // Linda Yang
+	facebookToParseId.put("122611373", "AcYk9Wsl5k"); // Linda Yang
 	facebookToParseId.put("821699189", "ii5d0pJ98P"); // Neha Karajgikar
 	facebookToParseId.put("712153", "VxyOPKYuoG"); // Subha Gollakota
     }
@@ -71,6 +71,10 @@ public class User implements Serializable {
 	return this.picUrl;
     }
 
+    public void setPicUrl(String url) {
+	this.picUrl = url;
+    }
+    
     public void setParseId(String parseId) {
 	this.parseId = parseId;
     }

@@ -115,6 +115,7 @@ public class ParseClient {
 		ParseObject userObject = new ParseObject(PARSEUSER);
 		userObject.put("fb_id", user.getFacebookId());
 		userObject.put("name", user.getName());
+		userObject.put("picture_url", user.getPicUrl());
 		try {
 		    // want to SAVE now, not in background, since we want to
 		    // wait
@@ -247,6 +248,7 @@ public class ParseClient {
     	}
     	return events;
     }
+
     
     //Create User object from retrieved Parse Object.
     private static ArrayList<User> createUsers(List<String> ids) throws ParseException {
@@ -258,6 +260,7 @@ public class ParseClient {
 	    user.setFacebookId(userObject.getString("fb_id"));
 	    user.setName(userObject.getString("name"));
 	    user.setParseId(userObject.getString("objectId"));
+	    user.setPicUrl(userObject.getString("picture_url"));
 	    invitees.add(user);
 	}
 	return invitees;
