@@ -23,9 +23,9 @@ public class User implements Serializable {
     // hardcoded parse ids. do not change.
     private static final Map<String, String> facebookToParseId = new HashMap<String, String>();
     static {
-	facebookToParseId.put("122611373", "xkcwlOcJFI"); // Linda Yang
-	facebookToParseId.put("821699189", "Mfq06HZXZs"); // Neha Karajgikar
-	facebookToParseId.put("712153", "ey1yLcaWGe"); // Subha Gollakota
+	facebookToParseId.put("122611373", "l5c08hMZaS"); // Linda Yang
+	facebookToParseId.put("821699189", "ii5d0pJ98P"); // Neha Karajgikar
+	facebookToParseId.put("712153", "VxyOPKYuoG"); // Subha Gollakota
     }
 
     // need to add more fields depending on what we get back from Facebook

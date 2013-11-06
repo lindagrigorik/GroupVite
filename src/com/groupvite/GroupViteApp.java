@@ -14,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
+import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -46,20 +47,35 @@ public class GroupViteApp extends Application {
     }
     
     public void createTestUsers(){
-	ParseObject UserObject = new ParseObject("UserObject");
-	UserObject.put("fbId", "122611373");
+	ParseObject UserObject = new ParseObject("UserObj");
+	UserObject.put("fb_id", "122611373");
 	UserObject.put("name", "Linda Yang");
-	UserObject.saveInBackground();
+	try {
+	    UserObject.save();
+        } catch (ParseException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+        }
 	
-	UserObject = new ParseObject("UserObject");
-	UserObject.put("fbId", "821699189");
+	UserObject = new ParseObject("UserObj");
+	UserObject.put("fb_id", "821699189");
 	UserObject.put("name", "Neha Karajgikar");
-	UserObject.saveInBackground();
+	try {
+	    UserObject.save();
+        } catch (ParseException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+        }
 	
-	UserObject = new ParseObject("UserObject");
-	UserObject.put("fbId", "712153");
+	UserObject = new ParseObject("UserObj");
+	UserObject.put("fb_id", "712153");
 	UserObject.put("name", "Subha Gollakota");
-	UserObject.saveInBackground();
+	try {
+	    UserObject.save();
+        } catch (ParseException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+        }
     }
     
     public Collection<GraphUser> getSelectedUsers() {

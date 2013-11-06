@@ -2,6 +2,7 @@ package com.groupvite.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,11 +26,13 @@ public class ParseClient {
 
     private static List<ParseObject> recentEvents = new ArrayList<ParseObject>();
     protected static final String PARSE = "Parse";
+    private static final String PARSEUSER = "UserObj";
+    private static final String PARSEEVENT = "EventObj";
     
     // currently this does nothing but eventually it should populate the user's
     // "events"
     public static void populateUser(User user) {
-	ParseQuery<ParseObject> query = ParseQuery.getQuery("UserObject");
+	ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSEUSER);
 	query.getInBackground(user.getParseId(), new GetCallback<ParseObject>() {
 	    public void done(ParseObject object, ParseException e) {
 		if (e == null) {
@@ -50,7 +53,6 @@ public class ParseClient {
 	currUser.add(user);
 	LinkedList<String> id = (LinkedList<String>) ParseClient.ensureUsersExist(currUser);
 	user.setParseId(id.get(0));
-
 	return id.get(0);
     }
 
@@ -63,12 +65,13 @@ public class ParseClient {
 	parseExecutor.submit(new Runnable() {
 	    @Override
 	    public void run() {
-		ParseObject parseEvent = new ParseObject("EventObject");
-		parseEvent.put("EventTitle", event.getEventTitle());
-		parseEvent.put("HostId", event.getHost().getParseId());
-		parseEvent.put("EventId", event.getEventId());
+		ParseObject parseEvent = new ParseObject(PARSEEVENT);
+		parseEvent.put("event_title", event.getEventTitle());
+		parseEvent.put("host_id", event.getHost().getParseId());
+		parseEvent.put("event_id", event.getEventId());
+		parseEvent.put("host_selected_dates", event.getHostSelectedDates());
 		Collection<String> userIds = ensureUsersExist(event.getInvitedUsers());
-		parseEvent.addAll("InvitedUsers", userIds);
+		parseEvent.addAll("invited_users", userIds);
 
 		// hack...
 		final int index = recentEvents.size();
@@ -112,8 +115,8 @@ public class ParseClient {
 	    } else {
 		// add user and then get its parse id, whcih is added to return
 		// list
-		ParseObject userObject = new ParseObject("UserObject");
-		userObject.put("fbId", user.getFacebookId());
+		ParseObject userObject = new ParseObject(PARSEUSER);
+		userObject.put("fb_id", user.getFacebookId());
 		userObject.put("name", user.getName());
 		try {
 		    // want to SAVE now, not in background, since we want to
@@ -132,12 +135,12 @@ public class ParseClient {
     }
 
     private static Map<String, User> getExistingUsers() throws ParseException {
-	ParseQuery<ParseObject> query = ParseQuery.getQuery("UserObject");
+	ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSEUSER);
 	List<ParseObject> existingUsers = query.find();
 	Map<String, User> userMap = new HashMap<String, User>();
 	for (ParseObject existing : existingUsers) {
 	    User currentUser = new User();
-	    currentUser.setFacebookId(existing.getString("fbId"));
+	    currentUser.setFacebookId(existing.getString("fb_id"));
 	    currentUser.setParseId(existing.getObjectId());
 	    userMap.put(currentUser.getFacebookId(), currentUser);
 	}
@@ -151,18 +154,18 @@ public class ParseClient {
 		if (e == null) {
 		    // update each user invited user with the event ID
 		    final String eventParseId = object.getObjectId();
-		    List<String> invitedUsersIds = object.getList("InvitedUsers");
-		    String hostUserId = object.getString("HostId");
+		    List<String> invitedUsersIds = object.getList("invited_users");
+		    String hostUserId = object.getString("host_id");
 
 		    // update the host user
-		    ParseQuery<ParseObject> hostQuery = ParseQuery.getQuery("UserObject");
+		    ParseQuery<ParseObject> hostQuery = ParseQuery.getQuery(PARSEUSER);
 		    // Retrieve the object by id
 		    hostQuery.getInBackground(hostUserId, new GetCallback<ParseObject>() {
 			public void done(ParseObject userObject, ParseException e) {
 			    if (e == null) {
 				// Now let's add the event to this user's hosted
 				// list
-				userObject.add("HostedEvent", eventParseId);
+				userObject.add("Hosted_event", eventParseId);
 				userObject.saveInBackground();
 			    }
 			}
@@ -170,7 +173,7 @@ public class ParseClient {
 
 		    for (String invitedUserId : invitedUsersIds) {
 			// update the invited user
-			ParseQuery<ParseObject> query = ParseQuery.getQuery("UserObject");
+			ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSEUSER);
 			// Retrieve the object by id
 			query.getInBackground(invitedUserId, new GetCallback<ParseObject>() {
 			    public void done(ParseObject userObject, ParseException e) {
@@ -190,25 +193,33 @@ public class ParseClient {
 	});
     }
 
+    //populate user's array list of EVENT object.
     public static ArrayList<Event> getUserEventsList(User user) {
-	ParseQuery<ParseObject> query = ParseQuery.getQuery("UserObject");
+	ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSEUSER);
 	//Map<String, ArrayList<Event>> events = new HashMap<String, ArrayList<Event>>();
 	ArrayList<Event> events = new ArrayList<Event>();
 	ParseObject userObject;
         try {
 	    userObject = query.get(user.getParseId());
-    	    List<String> eventIds = userObject.getList("HostedEvent");
+    	    List<String> eventIds = userObject.getList("hosted_event");
+    	    if (eventIds == null) return null;
     	    Event event;
     	    for (String eventId : eventIds){
     		event = new Event();
-    		query = ParseQuery.getQuery("EventObject");
+    		query = ParseQuery.getQuery(PARSEEVENT);
     		ParseObject eventObject = query.get(eventId);
     		//event.setEventId(Long.parseLong(eventObject.getString("eventId")));
-    		event.setEventTitle(eventObject.getString("EventTitle"));
+    		event.setEventTitle(eventObject.getString("event_title"));
     		event.setHost(user);
-    		List<String> inviteeIds = eventObject.getList("InvitedUsers");
+    		List<String> inviteeIds = eventObject.getList("invited_users");
     		ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
     		event.setInvitedUsers(inviteeUsers);
+    		List<Object> selectedDates = eventObject.getList("host_selected_dates");
+    		ArrayList<Date> hostSelectedDates = new ArrayList<Date>();
+    		for (Object date : selectedDates){
+    		   hostSelectedDates.add(new Date(Long.parseLong(date.toString())));
+    		}
+    		event.setHostSelectedDates(hostSelectedDates);
     		events.add(event);
     	    }
         } catch (ParseException e) {
@@ -218,15 +229,16 @@ public class ParseClient {
 	return events;
     }
     
+    //Create User object from retrieved Parse Object.
     private static ArrayList<User> createUsers(List<String> ids) throws ParseException {
 	ArrayList<User> invitees = new ArrayList<User>();
-	ParseQuery<ParseObject> query = ParseQuery.getQuery("UserObject");
+	ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSEUSER);
 	for (String id : ids){
 	    ParseObject userObject = query.get(id); 
 	    User user = new User();
-	    user.setFacebookId(userObject.getString("fbId"));
+	    user.setFacebookId(userObject.getString("fb_id"));
 	    user.setName(userObject.getString("name"));
-	    user.setParseId(userObject.getString("ObjectId"));
+	    user.setParseId(userObject.getString("object_id"));
 	    invitees.add(user);
 	}
 	return invitees;
