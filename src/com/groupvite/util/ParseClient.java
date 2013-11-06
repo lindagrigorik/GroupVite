@@ -75,17 +75,13 @@ public class ParseClient {
 		// hack...
 		final int index = recentEvents.size();
 		recentEvents.add(parseEvent);
-
-		parseEvent.saveInBackground(new SaveCallback() {
-		    @Override
-		    public void done(ParseException e) {
-			if (e == null) {
-			    updateEvent(index);
-			} else {
-			    Log.d(PARSE, "something went wrong with save event in background");
-			}
-		    }
-		});
+		
+		try {
+			parseEvent.save();
+		} catch (ParseException e) {
+			Log.d(PARSE, "Saving event failed." + e.getMessage());
+		}
+		updateEvent(index);
 	    }
 	});
     }
