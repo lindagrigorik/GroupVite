@@ -192,57 +192,57 @@ public class ParseClient {
 
     //populate user's array list of EVENT object.
     public static ArrayList<Event> getUserEventsList(User user) {
-	ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSEUSER);
-	//Map<String, ArrayList<Event>> events = new HashMap<String, ArrayList<Event>>();
-	ArrayList<Event> events = new ArrayList<Event>();
-	ParseObject userObject;
-        try {
-	    userObject = query.get(user.getParseId());
-    	    List<String> eventIds = userObject.getList("Hosted_event");
-    	    if (eventIds == null) return null;
-    	    Event event;
-    	    for (String eventId : eventIds){
-    		event = new Event();
-    		query = ParseQuery.getQuery(PARSEEVENT);
-    		ParseObject eventObject = query.get(eventId);
-    		event.setEventTitle(eventObject.getString("event_title"));
-    		event.setHost(user);
-    		List<String> inviteeIds = eventObject.getList("invited_users");
-    		ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
-    		event.setInvitedUsers(inviteeUsers);
-    		List<Object> selectedDates = eventObject.getList("host_selected_dates");
-    		ArrayList<Date> hostSelectedDates = new ArrayList<Date>();
-    		for (Object date : selectedDates){
-    		   hostSelectedDates.add(new Date(Long.parseLong(date.toString())));
+    	ParseQuery<ParseObject> query = ParseQuery.getQuery(PARSEUSER);
+    	//Map<String, ArrayList<Event>> events = new HashMap<String, ArrayList<Event>>();
+    	ArrayList<Event> events = new ArrayList<Event>();
+    	ParseObject userObject;
+    	try {
+    		userObject = query.get(user.getParseId());
+    		List<String> hostedEventIds = userObject.getList("Hosted_event");
+    		if (hostedEventIds != null) {
+    			for (String eventId : hostedEventIds){
+    				Event event = new Event();
+    				query = ParseQuery.getQuery(PARSEEVENT);
+    				ParseObject eventObject = query.get(eventId);
+    				event.setEventTitle(eventObject.getString("event_title"));
+    				event.setHost(user);
+    				List<String> inviteeIds = eventObject.getList("invited_users");
+    				ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
+    				event.setInvitedUsers(inviteeUsers);
+    				List<Object> selectedDates = eventObject.getList("host_selected_dates");
+    				ArrayList<Date> hostSelectedDates = new ArrayList<Date>();
+    				for (Object date : selectedDates){
+    					hostSelectedDates.add(new Date(Long.parseLong(date.toString())));
+    				}
+    				event.setHostSelectedDates(hostSelectedDates);
+    				events.add(event);
+    			}
     		}
-    		event.setHostSelectedDates(hostSelectedDates);
-    		events.add(event);
-    	    }
-    	    List<String> invitedEventIds = userObject.getList("Invited_event");
-    	    if (invitedEventIds != null) {
-		for (String invitedEventId : invitedEventIds) {
-			event = new Event();
-			query = ParseQuery.getQuery(PARSEEVENT);
-			ParseObject eventObject = query.get(invitedEventId);
-			event.setEventTitle(eventObject.getString("event_title"));
-			String hostParseId = eventObject.getString("host_id");
-					
-			query = ParseQuery.getQuery(PARSEUSER);
-			ParseObject hostObject = query.get(hostParseId);
-			event.setHost(User.fromParseObject(hostObject));
-			List<String> inviteeIds = eventObject.getList("invited_users");
-			ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
-			event.setInvitedUsers(inviteeUsers);
-			event.setEventParseId(eventObject.getObjectId());
-			events.add(event);
-		}
-    	    }
-    	    
-        } catch (ParseException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-        }
-        return events;
+    		List<String> invitedEventIds = userObject.getList("InvitedEvent");
+    		if (invitedEventIds != null) {
+    			for (String invitedEventId : invitedEventIds) {
+    				Event event = new Event();
+    				query = ParseQuery.getQuery(PARSEEVENT);
+    				ParseObject eventObject = query.get(invitedEventId);
+    				event.setEventTitle(eventObject.getString("event_title"));
+    				String hostParseId = eventObject.getString("host_id");
+
+    				query = ParseQuery.getQuery(PARSEUSER);
+    				ParseObject hostObject = query.get(hostParseId);
+    				event.setHost(User.fromParseObject(hostObject));
+    				List<String> inviteeIds = eventObject.getList("invited_users");
+    				ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
+    				event.setInvitedUsers(inviteeUsers);
+    				event.setEventParseId(eventObject.getObjectId());
+    				events.add(event);
+    			}
+    		}
+
+    	} catch (ParseException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    	return events;
     }
     
     //Create User object from retrieved Parse Object.
