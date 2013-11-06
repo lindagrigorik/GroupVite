@@ -14,9 +14,7 @@ import java.util.Iterator;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -32,6 +30,7 @@ import com.groupvite.models.InviteeResponse;
 import com.groupvite.models.Response;
 import com.groupvite.models.User;
 import com.groupvite.util.Operation;
+import com.groupvite.util.ParseClient;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 import com.roomorama.caldroid.CalendarHelper;
@@ -273,7 +272,8 @@ public class CalendarActivity extends FragmentActivity {
 				inviteeResponse.setResponseMap(responseMap);
 
 				Log.i(TAG, "Response is: " + response);
-				// send this response thru parse
+				// send this response thru 
+				ParseClient.syncInviteeResponse(event, currentUser, responseMap);
 
 				Intent i = new Intent(CalendarActivity.this, ContactsActivity.class);
 				i.putExtra("event", event);

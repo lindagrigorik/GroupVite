@@ -13,12 +13,12 @@ import java.util.concurrent.Executors;
 import android.util.Log;
 
 import com.groupvite.models.Event;
+import com.groupvite.models.Response;
 import com.groupvite.models.User;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.SaveCallback;
 
 public class ParseClient {
 
@@ -211,14 +211,14 @@ public class ParseClient {
     				ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
     				event.setInvitedUsers(inviteeUsers);
     				List<Object> selectedDates = eventObject.getList("host_selected_dates");
-				if (selectedDates != null && selectedDates.size() > 0){
-        			    ArrayList<Date> hostSelectedDates = new ArrayList<Date>();
-        			    for (Object date : selectedDates){
-        				hostSelectedDates.add(new Date(Long.parseLong(date.toString())));
-        			    }
-        			    event.setHostSelectedDates(hostSelectedDates);
+    				if (selectedDates != null && selectedDates.size() > 0){
+    					ArrayList<Date> hostSelectedDates = new ArrayList<Date>();
+    					for (Object date : selectedDates){
+    						hostSelectedDates.add(new Date(Long.parseLong(date.toString())));
+    					}
+    					event.setHostSelectedDates(hostSelectedDates);
     				}
-    				
+    				event.populateInviteeResponseMap(eventObject);
     				events.add(event);
     			}
     		}
@@ -237,7 +237,16 @@ public class ParseClient {
     				List<String> inviteeIds = eventObject.getList("invited_users");
     				ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
     				event.setInvitedUsers(inviteeUsers);
+    				List<Object> selectedDates = eventObject.getList("host_selected_dates");
+    				if (selectedDates != null && selectedDates.size() > 0){
+    					ArrayList<Date> hostSelectedDates = new ArrayList<Date>();
+    					for (Object date : selectedDates){
+    						hostSelectedDates.add(new Date(Long.parseLong(date.toString())));
+    					}
+    					event.setHostSelectedDates(hostSelectedDates);
+    				}
     				event.setEventParseId(eventObject.getObjectId());
+    				event.populateInviteeResponseMap(eventObject);
     				events.add(event);
     			}
     		}
@@ -259,13 +268,34 @@ public class ParseClient {
 	    User user = new User();
 	    user.setFacebookId(userObject.getString("fb_id"));
 	    user.setName(userObject.getString("name"));
-	    user.setParseId(userObject.getString("objectId"));
 	    user.setPicUrl(userObject.getString("picture_url"));
+	    user.setParseId(userObject.getObjectId());
 	    invitees.add(user);
 	}
 	return invitees;
 	
     }
     
+    public static void syncInviteeResponse(Event event, final User user,
+    		final HashMap<Date, Response> map) {
+    	Log.d("SUBHA", "calling sync invitee response");
+    	ParseQuery<ParseObject> eventQuery = ParseQuery.getQuery("EventObj");
+    	try {
+    		ParseObject eventObject = eventQuery.get(event.getEventParseId());
+    		// update the invitee response for this user
+			// pick out the dates the person said 'yes' to.
+			List<Long> yesDates = new ArrayList<Long>();
+			for (Date d : map.keySet()) {
+				if (map.get(d) == Response.YES) {
+					yesDates.add(d.getTime());
+				}
+			}
+			        
+			eventObject.addAll(user.getParseId(), yesDates);
+			eventObject.save();
+    	} catch (ParseException e) {
+    		Log.d("SUBHA", "unable to get event " + e.getMessage());
+    	}
+    }
     
 }
