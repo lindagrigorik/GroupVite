@@ -68,7 +68,6 @@ public class ParseClient {
 		ParseObject parseEvent = new ParseObject(PARSEEVENT);
 		parseEvent.put("event_title", event.getEventTitle());
 		parseEvent.put("host_id", event.getHost().getParseId());
-		parseEvent.put("event_id", event.getEventTitle());
 		parseEvent.put("host_selected_dates", event.getHostSelectedDates());
 		Collection<String> userIds = ensureUsersExist(event.getInvitedUsers());
 		parseEvent.addAll("invited_users", userIds);
