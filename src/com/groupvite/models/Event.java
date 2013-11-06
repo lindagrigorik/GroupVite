@@ -11,7 +11,7 @@ public class Event implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -2244371851975031083L;
-	private long eventId;
+	private String eventParseId;
 	private String eventTitle;
 	private ArrayList<Date> hostSelectedDates;
 	private User host;
@@ -28,6 +28,10 @@ public class Event implements Serializable {
 
 	public void setEventTitle(String eventTitle) {
 		this.eventTitle = eventTitle;
+	}
+	
+	public void setEventParseId(String eventParseId) {
+		this.eventParseId = eventParseId;
 	}
 
 	public ArrayList<Date> getHostSelectedDates() {
@@ -75,15 +79,7 @@ public class Event implements Serializable {
 			HashMap<User, InviteeResponse> inviteeResponseMap) {
 		this.inviteeResponseMap = inviteeResponseMap;
 	}
-
-	public long getEventId() {
-		return eventId;
-	}
-
-	public void setEventId(long eventId) {
-		this.eventId = eventId;
-	}
-
+	
 	public void initializeInviteeResponseForUser(User user) {
 		if (this.getInviteeResponseMap() == null) {
 			HashMap<User, InviteeResponse> inviteeResponseMap = new HashMap<User, InviteeResponse>();

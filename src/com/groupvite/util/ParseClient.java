@@ -46,8 +46,8 @@ public class ParseClient {
 	    }
 	});
     }
-    
-    //set parse id of existing guser.
+
+    //set parse id of existing user.
     public static String createParseUser(User user){
 	ArrayList<User> currUser= new ArrayList<User>();
 	currUser.add(user);
@@ -68,7 +68,7 @@ public class ParseClient {
 		ParseObject parseEvent = new ParseObject(PARSEEVENT);
 		parseEvent.put("event_title", event.getEventTitle());
 		parseEvent.put("host_id", event.getHost().getParseId());
-		parseEvent.put("event_id", event.getEventId());
+		parseEvent.put("event_id", event.getEventTitle());
 		parseEvent.put("host_selected_dates", event.getHostSelectedDates());
 		Collection<String> userIds = ensureUsersExist(event.getInvitedUsers());
 		parseEvent.addAll("invited_users", userIds);
@@ -220,13 +220,34 @@ public class ParseClient {
     		   hostSelectedDates.add(new Date(Long.parseLong(date.toString())));
     		}
     		event.setHostSelectedDates(hostSelectedDates);
+    		event.setEventParseId(eventObject.getObjectId());
     		events.add(event);
     	    }
+    	    List<String> invitedEventIds = userObject.getList("invited_event");
+    	    if (invitedEventIds != null) {
+		for (String invitedEventId : invitedEventIds) {
+			event = new Event();
+			query = ParseQuery.getQuery(PARSEEVENT);
+			ParseObject eventObject = query.get(invitedEventId);
+			event.setEventTitle(eventObject.getString("event_title"));
+			String hostParseId = eventObject.getString("host_id");
+					
+			query = ParseQuery.getQuery(PARSEUSER);
+			ParseObject hostObject = query.get(hostParseId);
+			event.setHost(User.fromParseObject(hostObject));
+			List<String> inviteeIds = eventObject.getList("invited_users");
+			ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
+			event.setInvitedUsers(inviteeUsers);
+			event.setEventParseId(eventObject.getObjectId());
+			events.add(event);
+		}
+    	    }
+    	    
         } catch (ParseException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
         }
-	return events;
+        return events;
     }
     
     //Create User object from retrieved Parse Object.
@@ -238,7 +259,7 @@ public class ParseClient {
 	    User user = new User();
 	    user.setFacebookId(userObject.getString("fb_id"));
 	    user.setName(userObject.getString("name"));
-	    user.setParseId(userObject.getString("object_id"));
+	    user.setParseId(userObject.getString("objectId"));
 	    invitees.add(user);
 	}
 	return invitees;

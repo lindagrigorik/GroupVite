@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,14 +51,15 @@ public class EventsActivity extends Activity {
 			public void onItemClick(AdapterView<?> adapter, View view, int position,
 					long res) {
 				Event e = (Event) adapter.getItemAtPosition(position);
-				User curUser = ((GroupViteApp)getApplication()).getCurrentUser();
+				User currentUser = ((GroupViteApp)getApplication()).getCurrentUser();
 				Toast.makeText(EventsActivity.this,
 						"Selecting this item here: " + e,
 						Toast.LENGTH_SHORT).show();
 				Intent i = new Intent(EventsActivity.this,CalendarActivity.class);
 				i.putExtra("event",e);
-				i.putExtra("currentUser", curUser);
-				if(e.getHost().getParseId().equalsIgnoreCase(curUser.getParseId())){
+				i.putExtra("currentUser", currentUser);
+
+				if(e.getHost().getParseId().equalsIgnoreCase(currentUser.getParseId())){
 					//it's the host's own event that he/she is trying to edit
 					i.putExtra("operation", "EDIT_CREATED_EVENT");
 				}else{
@@ -93,6 +95,8 @@ public class EventsActivity extends Activity {
 							}
 						}
 					}).executeAsync();
+				} else {
+					Log.d("SUBHA", "session unopened");
 				}
 			}
 		});
