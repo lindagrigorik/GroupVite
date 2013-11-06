@@ -7,8 +7,9 @@
     <color name="black">#000000</color>
     <color name="pink">#ff69b4</color>
     <color name="theme_pink">#558C89</color>
-    <color name = "teal">#558C89</color>
-    <color name = "light_teal">#74AFAD</color>
-    <color name ="muted_white">#ECECEA</color>
+    <color name="teal">#558C89</color>
+    <color name="light_teal">#74AFAD</color>
+    <color name="muted_white">#ECECEA</color>
+    <color name="orange">#D9853B</color>
 
 </resources>
