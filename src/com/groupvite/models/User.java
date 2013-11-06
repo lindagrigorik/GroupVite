@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.util.Log;
+
 import com.facebook.model.GraphUser;
 import com.parse.ParseObject;
 
@@ -87,7 +89,7 @@ public class User implements Serializable {
     
     public static User fromParseObject(ParseObject userObject) {
     	User user = new User(userObject.getString("fbId"), userObject.getString("name"));
-	    user.setParseId(userObject.getString("ObjectId"));
+	    user.setParseId(userObject.getObjectId());
 	    return user;
     }
 

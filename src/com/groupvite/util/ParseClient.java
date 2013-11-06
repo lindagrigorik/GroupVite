@@ -26,25 +26,7 @@ public class ParseClient {
     private static List<ParseObject> recentEvents = new ArrayList<ParseObject>();
     protected static final String PARSE = "Parse";
     
-    // currently this does nothing but eventually it should populate the user's
-    // "events"
-    public static void populateUser(User user) {
-	ParseQuery<ParseObject> query = ParseQuery.getQuery("UserObject");
-	query.getInBackground(user.getParseId(), new GetCallback<ParseObject>() {
-	    public void done(ParseObject object, ParseException e) {
-		if (e == null) {
-		    Log.d(PARSE, "name" + object.getString("name"));
-		    Log.d(PARSE, "fbid" + object.getString("fbid"));
-		} else {
-		    // something went wrong
-		    Log.d(PARSE, "something has gone wrong");
-		    Log.d(PARSE, e.toString());
-		}
-	    }
-	});
-    }
-    
-    //set parse id of existing guser.
+    //set parse id of existing user.
     public static String createParseUser(User user){
 	ArrayList<User> currUser= new ArrayList<User>();
 	currUser.add(user);
@@ -213,7 +195,6 @@ public class ParseClient {
     	    }
     	    
     	    List<String> invitedEventIds = userObject.getList("InvitedEvent");
-    	    Log.d("SUBHA", "invited event ids " + invitedEventIds);
     	    if (invitedEventIds != null) {
 				for (String eventId : invitedEventIds) {
 					Event event = new Event();
@@ -246,7 +227,7 @@ public class ParseClient {
 	    User user = new User();
 	    user.setFacebookId(userObject.getString("fbId"));
 	    user.setName(userObject.getString("name"));
-	    user.setParseId(userObject.getString("ObjectId"));
+	    user.setParseId(userObject.getString("objectId"));
 	    invitees.add(user);
 	}
 	return invitees;

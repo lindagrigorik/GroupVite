@@ -51,14 +51,15 @@ public class EventsActivity extends Activity {
 			public void onItemClick(AdapterView<?> adapter, View view, int position,
 					long res) {
 				Event e = (Event) adapter.getItemAtPosition(position);
-				User curUser = ((GroupViteApp)getApplication()).getCurrentUser();
+				User currentUser = ((GroupViteApp)getApplication()).getCurrentUser();
 				Toast.makeText(EventsActivity.this,
 						"Selecting this item here: " + e,
 						Toast.LENGTH_SHORT).show();
 				Intent i = new Intent(EventsActivity.this,CalendarActivity.class);
 				i.putExtra("event",e);
-				i.putExtra("currentUser", curUser);
-				if(e.getHost().getParseId().equalsIgnoreCase(curUser.getParseId())){
+				i.putExtra("currentUser", currentUser);
+
+				if(e.getHost().getParseId().equalsIgnoreCase(currentUser.getParseId())){
 					//it's the host's own event that he/she is trying to edit
 					i.putExtra("operation", "EDIT_CREATED_EVENT");
 				}else{
@@ -81,17 +82,10 @@ public class EventsActivity extends Activity {
 						public void onCompleted(GraphUser graphUser, Response response) {
 							if (graphUser != null) {
 								User user = User.fromGraphUser(graphUser);
-								ParseClient.populateUser(user);
 								// ParseClient.createParseUser(user);
 								ArrayList<Event> events = ParseClient.getUserEventsList(user);
 								((GroupViteApp) getApplication()).setCurrentUser(user);
 
-								// fake stubbing of events.
-								// Linda, remove this when you add the grabbing of events from
-								// parse.
-								Event fakeEvent = new Event();
-								fakeEvent.setEventTitle("Fake Event.");
-								fakeEvent.setHost(user);
 								eventsAdapter.addAll(events);
 
 								Toast.makeText(getApplicationContext(),
