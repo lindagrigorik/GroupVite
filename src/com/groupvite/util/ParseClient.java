@@ -266,7 +266,7 @@ public class ParseClient {
 	    User user = new User();
 	    user.setFacebookId(userObject.getString("fb_id"));
 	    user.setName(userObject.getString("name"));
-	    user.setParseId(userObject.getString("objectId"));
+	    user.setParseId(userObject.getObjectId());
 	    invitees.add(user);
 	}
 	return invitees;
