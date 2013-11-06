@@ -122,7 +122,8 @@ public class ContactsActivity extends Activity {
         contactsAdapter.addAll(users);
         
         // propagate to the event
-        Event e = ((GroupViteApp) getApplication()).getCurrentEvent();
+        Event e = (Event) getIntent().getSerializableExtra("event");
+//        Event e = ((GroupViteApp) getApplication()).getCurrentEvent();
         if (e == null) {
         	Log.d("PARSE", " EVENT IS NULL. ");
         	return;
