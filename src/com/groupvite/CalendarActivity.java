@@ -178,7 +178,7 @@ public class CalendarActivity extends FragmentActivity {
 			// this.alreadySelectedDates = event.getHostSelectedDates();
 
 			for (int i = 0; i < hostDates.size(); i++) {
-				caldroidFragment.setBackgroundResourceForDate(R.color.blue, event
+				caldroidFragment.setBackgroundResourceForDate(R.color.light_teal, event
 						.getHostSelectedDates().get(i));
 				caldroidFragment.setTextColorForDate(R.color.white, event
 						.getHostSelectedDates().get(i));
@@ -207,12 +207,12 @@ public class CalendarActivity extends FragmentActivity {
 					Log.i(TAG, "what's date: " + date);
 					if (inviteeSelectedDates.contains(date)) {
 						// then we have to unset the selection
-						caldroidFragment.setBackgroundResourceForDate(R.color.blue, date);
+						caldroidFragment.setBackgroundResourceForDate(R.color.light_teal, date);
 						caldroidFragment.setTextColorForDate(R.color.white, date);
 						inviteeSelectedDates.remove(date);
 					} else {
 						// we have to set the selection
-						caldroidFragment.setBackgroundResourceForDate(R.color.pink, date);
+						caldroidFragment.setBackgroundResourceForDate(R.color.teal, date);
 						caldroidFragment.setTextColorForDate(R.color.white, date);
 						inviteeSelectedDates.add(date);
 					}
@@ -391,7 +391,7 @@ public class CalendarActivity extends FragmentActivity {
 
 			
 			for (int i = 0; i < event.getHostSelectedDates().size(); i++) {
-				caldroidFragment.setBackgroundResourceForDate(R.color.blue, event
+				caldroidFragment.setBackgroundResourceForDate(R.color.light_teal, event
 						.getHostSelectedDates().get(i));
 				caldroidFragment.setTextColorForDate(R.color.white, event
 						.getHostSelectedDates().get(i));
@@ -426,7 +426,7 @@ public class CalendarActivity extends FragmentActivity {
 						hostSelectedDates.remove(date);
 					} else {
 						// we have to set the selection
-						caldroidFragment.setBackgroundResourceForDate(R.color.blue, date);
+						caldroidFragment.setBackgroundResourceForDate(R.color.light_teal, date);
 						caldroidFragment.setTextColorForDate(R.color.white, date);
 						hostSelectedDates.add(date);
 					}

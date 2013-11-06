@@ -6,7 +6,10 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".CalendarActivity" >
+    tools:context=".CalendarActivity"
+    android:background="@color/muted_white" 
+    
+    android:scrollbars="vertical">
 
     <TextView
         android:id="@+id/tvEventTitle"
@@ -16,6 +19,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
         android:text="Event title: "
+        
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
@@ -26,6 +30,7 @@
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/tvEventTitle"
         android:hint="Eg. dinner party"
+        
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -36,6 +41,7 @@
         android:layout_below="@id/tvEventTitle"
         android:layout_marginTop="10dp"
         android:text="Choose your dates: "
+        
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <LinearLayout
@@ -56,6 +62,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onFinish"
+            style="@style/NiceButton"
+            android:layout_marginTop="10dp"
             android:text="Done" />
     </LinearLayout>
 

@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="green">#8FCC85</color>
     <color name="blue">#ff33b5e5</color>
     <color name="white">#ffffff</color>
-    <color name ="black">#000000</color>
+    <color name="black">#000000</color>
     <color name="pink">#ff69b4</color>
+    <color name="theme_pink">#558C89</color>
+    <color name = "teal">#558C89</color>
+    <color name = "light_teal">#74AFAD</color>
+    <color name ="muted_white">#ECECEA</color>
+
 </resources>

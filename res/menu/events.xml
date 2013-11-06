@@ -4,6 +4,7 @@
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="always|withText"
+        
         android:title="@string/new_event"/>
 
 </menu>

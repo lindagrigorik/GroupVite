@@ -6,40 +6,52 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:scrollbars="horizontal"
     tools:context=".ContactsActivity" >
 
-    <Button
-        android:id="@+id/btnAddContacts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/etMessage"
-        android:layout_alignParentTop="true"
-        android:text="Choose Contacts" />
-
-    <EditText
-        android:id="@+id/etMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/border"
-        android:ems="10"
-        android:gravity="top|left"
-        android:hint="@string/message"
-        android:inputType="textMultiLine"
-        android:lines="10" >
-
-        <requestFocus />
-    </EditText>
-
-    <ListView
-        android:id="@+id/lvContacts"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/btnAddContacts"
-        android:layout_above="@+id/etMessage"
-        android:numColumns="3" >
-    </ListView>
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tvMessageForInvitees"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter your message:"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:layout_marginTop="10dp"
+            android:id="@+id/etMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:ems="10"
+            android:hint="@string/message"
+            android:gravity="top|left"
+            android:inputType="textMultiLine"
+            android:lines="5" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:layout_marginTop="10dp"
+            android:id="@+id/btnAddContacts"
+            style="@style/NiceButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            
+            android:layout_gravity="center_horizontal"
+            android:text="Choose Contacts" />
+
+        <ListView
+            android:id="@+id/lvContacts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="3" >
+        </ListView>
+    </LinearLayout>
 
 </RelativeLayout>
