@@ -68,7 +68,9 @@ public class ParseClient {
 		ParseObject parseEvent = new ParseObject(PARSEEVENT);
 		parseEvent.put("event_title", event.getEventTitle());
 		parseEvent.put("host_id", event.getHost().getParseId());
-		parseEvent.put("host_selected_dates", event.getHostSelectedDates());
+		for (Date date : event.getHostSelectedDates()) {
+			parseEvent.add("host_selected_dates", date.getTime());
+		}
 		Collection<String> userIds = ensureUsersExist(event.getInvitedUsers());
 		parseEvent.addAll("invited_users", userIds);
 
@@ -196,14 +198,13 @@ public class ParseClient {
 	ParseObject userObject;
         try {
 	    userObject = query.get(user.getParseId());
-    	    List<String> eventIds = userObject.getList("hosted_event");
+    	    List<String> eventIds = userObject.getList("Hosted_event");
     	    if (eventIds == null) return null;
     	    Event event;
     	    for (String eventId : eventIds){
     		event = new Event();
     		query = ParseQuery.getQuery(PARSEEVENT);
     		ParseObject eventObject = query.get(eventId);
-    		//event.setEventId(Long.parseLong(eventObject.getString("eventId")));
     		event.setEventTitle(eventObject.getString("event_title"));
     		event.setHost(user);
     		List<String> inviteeIds = eventObject.getList("invited_users");
@@ -215,10 +216,9 @@ public class ParseClient {
     		   hostSelectedDates.add(new Date(Long.parseLong(date.toString())));
     		}
     		event.setHostSelectedDates(hostSelectedDates);
-    		event.setEventParseId(eventObject.getObjectId());
     		events.add(event);
     	    }
-    	    List<String> invitedEventIds = userObject.getList("invited_event");
+    	    List<String> invitedEventIds = userObject.getList("Invited_event");
     	    if (invitedEventIds != null) {
 		for (String invitedEventId : invitedEventIds) {
 			event = new Event();
