@@ -95,12 +95,14 @@ public class CalendarActivity extends FragmentActivity {
 			// get from database, the event details
 			// show list of preselected dates that you can choose to
 			Event ev = (Event) i.getSerializableExtra("event");
+			Log.i(TAG,"What's event; "+ev);
 			respondToInvite(ev);
 			break;
 		case EDIT_CREATED_EVENT:
 			// get from database, the event details
 			// show calendar
 			Event e = (Event) i.getSerializableExtra("event");
+			Log.i(TAG,"What's event; "+e);
 			editCreatedEvent(e);
 			break;
 		case EDIT_RESPONDED_EVENT:
@@ -271,7 +273,8 @@ public class CalendarActivity extends FragmentActivity {
 				}
 				inviteeResponse.setResponseMap(responseMap);
 
-				Log.i(TAG, "Response is: " + response);
+				Log.i(TAG, "Response is: " + responseMap);
+				Log.i(TAG, "event is: "+event);
 				// send this response thru 
 				ParseClient.syncInviteeResponse(event, currentUser, responseMap);
 
@@ -298,6 +301,18 @@ public class CalendarActivity extends FragmentActivity {
 			Date date = (Date) iterator.next();
 			disabledDateTimes.add(CalendarHelper.convertDateToDateTime(date));
 
+		}
+		
+		
+		if(minDate.after(Calendar.getInstance().getTime())){
+			Calendar cal = Calendar.getInstance();
+			Date d =cal.getTime();
+			while(d.before(minDate)){
+				disabledDateTimes.add(CalendarHelper.convertDateToDateTime(d));
+				cal.add(Calendar.DATE, 1);
+				d = cal.getTime();
+			}
+			
 		}
 		return disabledDateTimes;
 	}
@@ -353,7 +368,7 @@ public class CalendarActivity extends FragmentActivity {
 
 		if (event != null) {
 			//TODO: remove this stub after Subha finishes
-			if(event.getHostSelectedDates() == null)
+			/*		if(event.getHostSelectedDates() == null)
 			{
 				ArrayList<Date> dates = new ArrayList<Date>();
 				try {
@@ -371,7 +386,7 @@ public class CalendarActivity extends FragmentActivity {
 				}
 
 				event.setHostSelectedDates(dates);
-			}
+			}*/
 			this.hostSelectedDates = event.getHostSelectedDates();
 
 			
@@ -388,6 +403,7 @@ public class CalendarActivity extends FragmentActivity {
 		}
 
 		FragmentTransaction t = getSupportFragmentManager().beginTransaction();
+	
 		t.replace(R.id.calendar1, caldroidFragment);
 		t.commit();
 
