@@ -210,11 +210,14 @@ public class ParseClient {
     				ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
     				event.setInvitedUsers(inviteeUsers);
     				List<Object> selectedDates = eventObject.getList("host_selected_dates");
-    				ArrayList<Date> hostSelectedDates = new ArrayList<Date>();
-    				for (Object date : selectedDates){
-    					hostSelectedDates.add(new Date(Long.parseLong(date.toString())));
+				if (selectedDates != null && selectedDates.size() > 0){
+        			    ArrayList<Date> hostSelectedDates = new ArrayList<Date>();
+        			    for (Object date : selectedDates){
+        				hostSelectedDates.add(new Date(Long.parseLong(date.toString())));
+        			    }
+        			    event.setHostSelectedDates(hostSelectedDates);
     				}
-    				event.setHostSelectedDates(hostSelectedDates);
+    				
     				events.add(event);
     			}
     		}
