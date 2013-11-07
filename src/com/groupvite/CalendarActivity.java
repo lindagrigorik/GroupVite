@@ -198,9 +198,9 @@ public class CalendarActivity extends FragmentActivity {
 
 			@Override
 			public void onSelectDate(Date date, View view) {
-				Toast.makeText(getApplicationContext(),
-						"here we are selecting: " + formatter.format(date),
-						Toast.LENGTH_SHORT).show();
+//			    	Toast.makeText(getApplicationContext(),
+//						"here we are selecting: " + formatter.format(date),
+//						Toast.LENGTH_SHORT).show();
 
 				if (caldroidFragment != null) {
 					Log.i(TAG, "whats in already selected dates: " + hostSelectedDates);

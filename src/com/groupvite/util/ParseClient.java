@@ -291,7 +291,7 @@ public class ParseClient {
 				}
 			}
 			        
-			eventObject.addAll(user.getParseId(), yesDates);
+			eventObject.addAll("invitee_response", yesDates);
 			eventObject.save();
     	} catch (ParseException e) {
     		Log.d("SUBHA", "unable to get event " + e.getMessage());
