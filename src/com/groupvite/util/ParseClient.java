@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import android.util.Log;
 
 import com.groupvite.models.Event;
+import com.groupvite.models.InviteeResponse;
 import com.groupvite.models.Response;
 import com.groupvite.models.User;
 import com.parse.GetCallback;
@@ -218,7 +219,25 @@ public class ParseClient {
     					}
     					event.setHostSelectedDates(hostSelectedDates);
     				}
-    				event.populateInviteeResponseMap(eventObject);
+    				//create invitee response object
+    				if (inviteeUsers != null && inviteeUsers.size()>0) {
+    				    Map<User, InviteeResponse> inviteeResponses = new HashMap<User, InviteeResponse>();
+    				    //ArrayList<Date> responseSelectedDates = new ArrayList<Date>();
+    				    InviteeResponse ir = new InviteeResponse();
+    				    for (User invitee: inviteeUsers){
+    					List<Object> inviteeResponseDates = eventObject.getList(invitee.getParseId());
+    					HashMap <Date, Response> inviteeResponse = new HashMap<Date, Response>();
+    					if (inviteeResponseDates != null && inviteeResponseDates.size()>0){
+    					    for (Object date : inviteeResponseDates){
+    						inviteeResponse.put(new Date(Long.parseLong(date.toString())), Response.YES);
+    					    }    
+    					}
+    					ir.setResponseMap(inviteeResponse);
+    					inviteeResponses.put(invitee, ir);
+    				    }
+    				    event.populateInviteeResponseMap(eventObject);
+    				}
+    				
     				events.add(event);
     			}
     		}
@@ -291,7 +310,7 @@ public class ParseClient {
 				}
 			}
 			        
-			eventObject.addAll("invitee_response", yesDates);
+			eventObject.addAll(user.getParseId(), yesDates);
 			eventObject.save();
     	} catch (ParseException e) {
     		Log.d("SUBHA", "unable to get event " + e.getMessage());

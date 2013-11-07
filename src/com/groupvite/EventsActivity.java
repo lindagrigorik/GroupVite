@@ -52,9 +52,9 @@ public class EventsActivity extends Activity {
 					long res) {
 				Event e = (Event) adapter.getItemAtPosition(position);
 				User currentUser = ((GroupViteApp)getApplication()).getCurrentUser();
-				Toast.makeText(EventsActivity.this,
-						"Selecting this item here: " + e,
-						Toast.LENGTH_SHORT).show();
+//				Toast.makeText(EventsActivity.this,
+//						"Selecting this item here: " + e,
+//						Toast.LENGTH_SHORT).show();
 				Intent i = new Intent(EventsActivity.this,CalendarActivity.class);
 				i.putExtra("event",e);
 				i.putExtra("currentUser", currentUser);
