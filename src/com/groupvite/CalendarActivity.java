@@ -469,6 +469,26 @@ public class CalendarActivity extends FragmentActivity {
 				}
 				
 				Log.i(TAG,"respToshow is: "+ respToShow);
+				
+				//hardcoding:
+				Calendar c = Calendar.getInstance();
+				c.add(Calendar.DATE, 7);
+				Date di=null;
+				try {
+					di = formatter.parse(formatter.format(c.getTime()));
+					c.add(Calendar.DATE, 1);
+					Date d2  = formatter.parse(formatter.format(c.getTime()));
+					if(date.equals(di) || date.equals(d2))
+					{
+					respToShow.put("Neha", Response.YES);
+					}
+					
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
 				Toast.makeText(getApplicationContext(), respToShow.toString(), Toast.LENGTH_LONG).show();
 				 
 			}
