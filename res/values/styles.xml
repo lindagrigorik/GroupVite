@@ -11,14 +11,17 @@
             backward-compatibility can go here.
         -->
     </style>
-   <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+   <style name="MyActionBar" parent="@android:style/Widget.Holo.ActionBar">
         <item name="android:background">@color/theme_pink</item>
         <item name = "android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <item name="android:actionBarStyle">@style/MyActionBar</item>
+        
+        
         
         
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
@@ -27,7 +30,7 @@
     <style name="NiceButton" parent="@android:style/Widget.Button">
         <item name="android:gravity">center_vertical|center_horizontal</item>
         <item name="android:textColor">#FFFFFF</item>
-        <item name="android:background">@drawable/nice_button_enabled</item>
+        <item name="android:background">@drawable/states_nice_button</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:focusable">true</item>
