@@ -18,8 +18,7 @@
         android:icon="@drawable/ic_gvite"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <meta-data android:name="AA_DB_NAME" android:value="GroupVite.db" />
-		<meta-data android:name="AA_DB_VERSION" android:value="1" />
+        
         
         <activity
             android:name="com.groupvite.EventsActivity"

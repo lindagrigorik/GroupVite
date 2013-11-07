@@ -44,13 +44,15 @@
             android:layout_height="wrap_content"
             
             android:layout_gravity="center_horizontal"
-            android:text="Choose Contacts" />
+            android:text="Choose Contacts to Invite" />
 
         <ListView
+            android:layout_marginTop="10dp"
             android:id="@+id/lvContacts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:numColumns="3" >
+            android:numColumns="3"
+            android:background="@drawable/border" >
         </ListView>
     </LinearLayout>
 
