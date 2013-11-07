@@ -224,15 +224,15 @@ public class CalendarActivity extends FragmentActivity {
 
 			@Override
 			public void onChangeMonth(int month, int year) {
-				String text = "month: " + month + " year: " + year;
-				Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT)
-						.show();
+//				String text = "month: " + month + " year: " + year;
+//				Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT)
+//						.show();
 			}
 
 			@Override
 			public void onLongClickDate(Date date, View view) {
-				Toast.makeText(getApplicationContext(),
-						"Long click " + formatter.format(date), Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getApplicationContext(),
+//						"Long click " + formatter.format(date), Toast.LENGTH_SHORT).show();
 
 				// show response
 
@@ -241,8 +241,8 @@ public class CalendarActivity extends FragmentActivity {
 			@Override
 			public void onCaldroidViewCreated() {
 				if (caldroidFragment.getLeftArrowButton() != null) {
-					Toast.makeText(getApplicationContext(), "Caldroid view is created",
-							Toast.LENGTH_SHORT).show();
+//					Toast.makeText(getApplicationContext(), "Caldroid view is created",
+//							Toast.LENGTH_SHORT).show();
 				}
 			}
 
@@ -251,6 +251,7 @@ public class CalendarActivity extends FragmentActivity {
 		// Setup Caldroid
 		caldroidFragment.setCaldroidListener(listener);
 		Button done = (Button) findViewById(R.id.done_button);
+		
 		done.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -278,10 +279,12 @@ public class CalendarActivity extends FragmentActivity {
 				// send this response thru 
 				ParseClient.syncInviteeResponse(event, currentUser, responseMap);
 
-				Intent i = new Intent(CalendarActivity.this, ContactsActivity.class);
+				Intent i = new Intent(CalendarActivity.this, EventsActivity.class);
 				i.putExtra("event", event);
+				Toast.makeText(CalendarActivity.this, "Saving response.. ", Toast.LENGTH_LONG);
 
 				startActivity(i);
+				
 
 			}
 		});
@@ -317,10 +320,11 @@ public class CalendarActivity extends FragmentActivity {
 		return disabledDateTimes;
 	}
 
-	private void editCreatedEvent(Event event) {
+	private void editCreatedEvent(Event e) {
 		Log.i(TAG, "IN editCreatedEvent");
 		// Event event = stubEvent();
-		add_or_update_event(event);
+		this.event = e;
+		add_or_update_event(e);
 
 	}
 
@@ -355,7 +359,7 @@ public class CalendarActivity extends FragmentActivity {
 		add_or_update_event(null);
 	}
 
-	public void add_or_update_event(Event event) {
+	public void add_or_update_event(Event e) {
 		Bundle args = new Bundle();
 		Calendar cal = Calendar.getInstance();
 		args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
@@ -366,7 +370,7 @@ public class CalendarActivity extends FragmentActivity {
 		args.putBoolean(CaldroidFragment.ENABLE_CLICK_ON_DISABLED_DATES, false);
 		caldroidFragment.setArguments(args);
 
-		if (event != null) {
+		if (e != null) {
 			//TODO: remove this stub after Subha finishes
 			/*		if(event.getHostSelectedDates() == null)
 			{
@@ -387,19 +391,19 @@ public class CalendarActivity extends FragmentActivity {
 
 				event.setHostSelectedDates(dates);
 			}*/
-			this.hostSelectedDates = event.getHostSelectedDates();
+			this.hostSelectedDates = e.getHostSelectedDates();
 
 			
-			for (int i = 0; i < event.getHostSelectedDates().size(); i++) {
-				caldroidFragment.setBackgroundResourceForDate(R.color.light_teal, event
+			for (int i = 0; i < e.getHostSelectedDates().size(); i++) {
+				caldroidFragment.setBackgroundResourceForDate(R.color.light_teal, e
 						.getHostSelectedDates().get(i));
-				caldroidFragment.setTextColorForDate(R.color.white, event
+				caldroidFragment.setTextColorForDate(R.color.white, e
 						.getHostSelectedDates().get(i));
 
 			}
 			// setting event title
 			EditText etEventTitle = (EditText) findViewById(R.id.etEventTitle);
-			etEventTitle.setText(event.getEventTitle());
+			etEventTitle.setText(e.getEventTitle());
 		}
 
 		FragmentTransaction t = getSupportFragmentManager().beginTransaction();
@@ -412,9 +416,9 @@ public class CalendarActivity extends FragmentActivity {
 
 			@Override
 			public void onSelectDate(Date date, View view) {
-				Toast.makeText(getApplicationContext(),
-						"here we are selecting: " + formatter.format(date),
-						Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getApplicationContext(),
+//						"here we are selecting: " + formatter.format(date),
+//						Toast.LENGTH_SHORT).show();
 
 				if (caldroidFragment != null) {
 					Log.i(TAG, "whats in already selected dates: " + hostSelectedDates);
@@ -439,21 +443,41 @@ public class CalendarActivity extends FragmentActivity {
 			@Override
 			public void onChangeMonth(int month, int year) {
 				String text = "month: " + month + " year: " + year;
-				Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT)
-						.show();
+//				Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT)
+//						.show();
 			}
 
 			@Override
 			public void onLongClickDate(Date date, View view) {
-				Toast.makeText(getApplicationContext(),
-						"Long click " + formatter.format(date), Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getApplicationContext(),
+//						"Long click in hosted event " + formatter.format(date), Toast.LENGTH_SHORT).show();
+				HashMap<User, InviteeResponse> invRespMap = event.getInviteeResponseMap();
+				HashMap<String, Response> respToShow = new HashMap<String, Response>();
+				for (Iterator iterator = invRespMap.keySet().iterator(); iterator.hasNext();) {
+					User u = (User) iterator.next();
+					String name = u.getName();
+					HashMap<Date, Response> rMap = invRespMap.get(u).getResponseMap();
+					for (Iterator it = rMap.keySet().iterator(); it.hasNext();) {
+						Date d = (Date) it.next();
+						if(date.equals(d)){
+							respToShow.put(name, rMap.get(d));
+						}
+							
+						
+					}
+					
+				}
+				
+				Log.i(TAG,"respToshow is: "+ respToShow);
+				Toast.makeText(getApplicationContext(), respToShow.toString(), Toast.LENGTH_LONG).show();
+				 
 			}
 
 			@Override
 			public void onCaldroidViewCreated() {
 				if (caldroidFragment.getLeftArrowButton() != null) {
-					Toast.makeText(getApplicationContext(), "Caldroid view is created",
-							Toast.LENGTH_SHORT).show();
+//					Toast.makeText(getApplicationContext(), "Caldroid view is created",
+//							Toast.LENGTH_SHORT).show();
 				}
 			}
 
