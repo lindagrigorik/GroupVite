@@ -69,6 +69,7 @@ public class ParseClient {
 		ParseObject parseEvent = new ParseObject(PARSEEVENT);
 		parseEvent.put("event_title", event.getEventTitle());
 		parseEvent.put("host_id", event.getHost().getParseId());
+		//parseEvent.put("message_body", event.getMessageBody());
 		for (Date date : event.getHostSelectedDates()) {
 			parseEvent.add("host_selected_dates", date.getTime());
 		}
@@ -207,6 +208,7 @@ public class ParseClient {
     				query = ParseQuery.getQuery(PARSEEVENT);
     				ParseObject eventObject = query.get(eventId);
     				event.setEventTitle(eventObject.getString("event_title"));
+    				//event.setMessageBody(eventObject.getString("message_body"));
     				event.setHost(user);
     				List<String> inviteeIds = eventObject.getList("invited_users");
     				ArrayList<User> inviteeUsers = createUsers(inviteeIds); //create list of inviteUsers
@@ -248,6 +250,7 @@ public class ParseClient {
     				query = ParseQuery.getQuery(PARSEEVENT);
     				ParseObject eventObject = query.get(invitedEventId);
     				event.setEventTitle(eventObject.getString("event_title"));
+    				//event.setMessageBody(eventObject.getString("message_body"));
     				String hostParseId = eventObject.getString("host_id");
 
     				query = ParseQuery.getQuery(PARSEUSER);

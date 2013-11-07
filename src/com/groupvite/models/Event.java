@@ -20,6 +20,15 @@ public class Event implements Serializable {
 	private HashMap<User, InviteeResponse> inviteeResponseMap;
 	private Date finalSelectedDay;
 	private List<User> invitedUsers;
+	private String messageBody;
+
+	public String getMessageBody() {
+	    return messageBody;
+	}
+
+	public void setMessageBody(String messageBody) {
+	    this.messageBody = messageBody;
+	}
 
 	public Event() {
 	}

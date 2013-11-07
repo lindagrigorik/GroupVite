@@ -11,7 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Session;
@@ -30,7 +32,7 @@ public class ContactsActivity extends Activity {
 	private Button pickFriendsButton;
 	private UiLifecycleHelper lifecycleHelper;
 	boolean pickFriendsWhenSessionOpened;
-	
+	EditText etMessage;
 	private ListView lvContacts;
 	private ContactsAdapter contactsAdapter;
 	
@@ -43,6 +45,11 @@ public class ContactsActivity extends Activity {
     	contactsAdapter = new ContactsAdapter(getApplicationContext(), new ArrayList<User>());
     	lvContacts.setAdapter(contactsAdapter);
     	
+    	/*etMessage=(EditText)findViewById(R.id.etMessage);
+    	GroupViteApp application = (GroupViteApp) getApplication();
+    	if (application.getCurrentEvent().getMessageBody()!=null && !application.getCurrentEvent().getMessageBody().equals("")){
+    	    etMessage.setText(application.getCurrentEvent().getMessageBody());
+    	}*/
     	pickFriendsButton = (Button) findViewById(R.id.btnAddContacts);
     	pickFriendsButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick(View v) {
@@ -59,6 +66,7 @@ public class ContactsActivity extends Activity {
         lifecycleHelper.onCreate(savedInstanceState);
 
         ensureOpenSession();
+        
     }
     
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
