@@ -29,6 +29,7 @@ import com.groupvite.models.Event;
 import com.groupvite.models.InviteeResponse;
 import com.groupvite.models.Response;
 import com.groupvite.models.User;
+import com.groupvite.util.GroupViteUtil;
 import com.groupvite.util.Operation;
 import com.groupvite.util.ParseClient;
 import com.roomorama.caldroid.CaldroidFragment;
@@ -95,14 +96,14 @@ public class CalendarActivity extends FragmentActivity {
 			// get from database, the event details
 			// show list of preselected dates that you can choose to
 			Event ev = (Event) i.getSerializableExtra("event");
-			Log.i(TAG,"What's event; "+ev);
+			Log.i(TAG, "What's event; " + ev);
 			respondToInvite(ev);
 			break;
 		case EDIT_CREATED_EVENT:
 			// get from database, the event details
 			// show calendar
 			Event e = (Event) i.getSerializableExtra("event");
-			Log.i(TAG,"What's event; "+e);
+			Log.i(TAG, "What's event; " + e);
 			editCreatedEvent(e);
 			break;
 		case EDIT_RESPONDED_EVENT:
@@ -127,7 +128,7 @@ public class CalendarActivity extends FragmentActivity {
 	public ArrayList<Date> getDatesBetweentMinAndMax(Date minDate, Date maxDate,
 			ArrayList<Date> selectedDates) {
 		ArrayList<Date> dates = new ArrayList<Date>();
-		Calendar calendar = new GregorianCalendar();
+		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(minDate);
 
 		while (calendar.getTime().before(maxDate)) {
@@ -152,6 +153,7 @@ public class CalendarActivity extends FragmentActivity {
 		inviteeSelectedDates = new ArrayList<Date>();
 		event = e;
 		ArrayList<Date> hostDates = event.getHostSelectedDates();
+		hostDates = GroupViteUtil.formatDatesWithoutTimes(hostDates);
 		Collections.sort(hostDates);
 		hostSelectedDates = hostDates;
 		Date minDate = hostDates.get(0);
@@ -198,16 +200,17 @@ public class CalendarActivity extends FragmentActivity {
 
 			@Override
 			public void onSelectDate(Date date, View view) {
-//			    	Toast.makeText(getApplicationContext(),
-//						"here we are selecting: " + formatter.format(date),
-//						Toast.LENGTH_SHORT).show();
+				// Toast.makeText(getApplicationContext(),
+				// "here we are selecting: " + formatter.format(date),
+				// Toast.LENGTH_SHORT).show();
 
 				if (caldroidFragment != null) {
 					Log.i(TAG, "whats in already selected dates: " + hostSelectedDates);
 					Log.i(TAG, "what's date: " + date);
 					if (inviteeSelectedDates.contains(date)) {
 						// then we have to unset the selection
-						caldroidFragment.setBackgroundResourceForDate(R.color.light_teal, date);
+						caldroidFragment.setBackgroundResourceForDate(R.color.light_teal,
+								date);
 						caldroidFragment.setTextColorForDate(R.color.white, date);
 						inviteeSelectedDates.remove(date);
 					} else {
@@ -224,15 +227,15 @@ public class CalendarActivity extends FragmentActivity {
 
 			@Override
 			public void onChangeMonth(int month, int year) {
-//				String text = "month: " + month + " year: " + year;
-//				Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT)
-//						.show();
+				// String text = "month: " + month + " year: " + year;
+				// Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT)
+				// .show();
 			}
 
 			@Override
 			public void onLongClickDate(Date date, View view) {
-//				Toast.makeText(getApplicationContext(),
-//						"Long click " + formatter.format(date), Toast.LENGTH_SHORT).show();
+				// Toast.makeText(getApplicationContext(),
+				// "Long click " + formatter.format(date), Toast.LENGTH_SHORT).show();
 
 				// show response
 
@@ -241,8 +244,8 @@ public class CalendarActivity extends FragmentActivity {
 			@Override
 			public void onCaldroidViewCreated() {
 				if (caldroidFragment.getLeftArrowButton() != null) {
-//					Toast.makeText(getApplicationContext(), "Caldroid view is created",
-//							Toast.LENGTH_SHORT).show();
+					// Toast.makeText(getApplicationContext(), "Caldroid view is created",
+					// Toast.LENGTH_SHORT).show();
 				}
 			}
 
@@ -251,7 +254,7 @@ public class CalendarActivity extends FragmentActivity {
 		// Setup Caldroid
 		caldroidFragment.setCaldroidListener(listener);
 		Button done = (Button) findViewById(R.id.done_button);
-		
+
 		done.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -275,16 +278,16 @@ public class CalendarActivity extends FragmentActivity {
 				inviteeResponse.setResponseMap(responseMap);
 
 				Log.i(TAG, "Response is: " + responseMap);
-				Log.i(TAG, "event is: "+event);
-				// send this response thru 
+				Log.i(TAG, "event is: " + event);
+				// send this response thru
 				ParseClient.syncInviteeResponse(event, currentUser, responseMap);
 
 				Intent i = new Intent(CalendarActivity.this, EventsActivity.class);
 				i.putExtra("event", event);
-				Toast.makeText(CalendarActivity.this, "Saving response.. ", Toast.LENGTH_LONG);
+				Toast.makeText(CalendarActivity.this, "Saving response.. ",
+						Toast.LENGTH_LONG).show();
 
 				startActivity(i);
-				
 
 			}
 		});
@@ -305,17 +308,22 @@ public class CalendarActivity extends FragmentActivity {
 			disabledDateTimes.add(CalendarHelper.convertDateToDateTime(date));
 
 		}
-		
-		
-		if(minDate.after(Calendar.getInstance().getTime())){
+
+		if (minDate.after(Calendar.getInstance().getTime())) {
 			Calendar cal = Calendar.getInstance();
-			Date d =cal.getTime();
-			while(d.before(minDate)){
+			Date d = null;
+			try {
+				d = formatter.parse(formatter.format(cal.getTime()));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			while (d.before(minDate)) {
 				disabledDateTimes.add(CalendarHelper.convertDateToDateTime(d));
 				cal.add(Calendar.DATE, 1);
 				d = cal.getTime();
 			}
-			
+
 		}
 		return disabledDateTimes;
 	}
@@ -371,29 +379,24 @@ public class CalendarActivity extends FragmentActivity {
 		caldroidFragment.setArguments(args);
 
 		if (e != null) {
-			//TODO: remove this stub after Subha finishes
-			/*		if(event.getHostSelectedDates() == null)
-			{
-				ArrayList<Date> dates = new ArrayList<Date>();
-				try {
-					Calendar cl = Calendar.getInstance();
-					dates.add(formatter.parse(formatter.format(cl.getTime())));
-					cl.add(Calendar.DATE, 2);
-					dates.add(formatter.parse(formatter.format(cl.getTime())));
-					cl.add(Calendar.DATE, 3);
-					dates.add(formatter.parse(formatter.format(cl.getTime())));
-					cl.add(Calendar.DATE, 4);
-					dates.add(formatter.parse(formatter.format(cl.getTime())));
-				} catch (ParseException e1) {
-					Log.e(TAG, "Whoops, problem parsing dates");
-					e1.printStackTrace();
-				}
-
-				event.setHostSelectedDates(dates);
-			}*/
+			// TODO: remove this stub after Subha finishes
+			/*
+			 * if(event.getHostSelectedDates() == null) { ArrayList<Date> dates = new
+			 * ArrayList<Date>(); try { Calendar cl = Calendar.getInstance();
+			 * dates.add(formatter.parse(formatter.format(cl.getTime())));
+			 * cl.add(Calendar.DATE, 2);
+			 * dates.add(formatter.parse(formatter.format(cl.getTime())));
+			 * cl.add(Calendar.DATE, 3);
+			 * dates.add(formatter.parse(formatter.format(cl.getTime())));
+			 * cl.add(Calendar.DATE, 4);
+			 * dates.add(formatter.parse(formatter.format(cl.getTime()))); } catch
+			 * (ParseException e1) { Log.e(TAG, "Whoops, problem parsing dates");
+			 * e1.printStackTrace(); }
+			 * 
+			 * event.setHostSelectedDates(dates); }
+			 */
 			this.hostSelectedDates = e.getHostSelectedDates();
 
-			
 			for (int i = 0; i < e.getHostSelectedDates().size(); i++) {
 				caldroidFragment.setBackgroundResourceForDate(R.color.light_teal, e
 						.getHostSelectedDates().get(i));
@@ -407,7 +410,7 @@ public class CalendarActivity extends FragmentActivity {
 		}
 
 		FragmentTransaction t = getSupportFragmentManager().beginTransaction();
-	
+
 		t.replace(R.id.calendar1, caldroidFragment);
 		t.commit();
 
@@ -416,9 +419,6 @@ public class CalendarActivity extends FragmentActivity {
 
 			@Override
 			public void onSelectDate(Date date, View view) {
-//				Toast.makeText(getApplicationContext(),
-//						"here we are selecting: " + formatter.format(date),
-//						Toast.LENGTH_SHORT).show();
 
 				if (caldroidFragment != null) {
 					Log.i(TAG, "whats in already selected dates: " + hostSelectedDates);
@@ -430,7 +430,8 @@ public class CalendarActivity extends FragmentActivity {
 						hostSelectedDates.remove(date);
 					} else {
 						// we have to set the selection
-						caldroidFragment.setBackgroundResourceForDate(R.color.light_teal, date);
+						caldroidFragment.setBackgroundResourceForDate(R.color.light_teal,
+								date);
 						caldroidFragment.setTextColorForDate(R.color.white, date);
 						hostSelectedDates.add(date);
 					}
@@ -442,63 +443,37 @@ public class CalendarActivity extends FragmentActivity {
 
 			@Override
 			public void onChangeMonth(int month, int year) {
-				String text = "month: " + month + " year: " + year;
-//				Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT)
-//						.show();
 			}
 
 			@Override
 			public void onLongClickDate(Date date, View view) {
-//				Toast.makeText(getApplicationContext(),
-//						"Long click in hosted event " + formatter.format(date), Toast.LENGTH_SHORT).show();
-				HashMap<User, InviteeResponse> invRespMap = event.getInviteeResponseMap();
+				HashMap<User, InviteeResponse> invRespMap = event
+						.getInviteeResponseMap();
 				HashMap<String, Response> respToShow = new HashMap<String, Response>();
-				for (Iterator iterator = invRespMap.keySet().iterator(); iterator.hasNext();) {
+				for (Iterator iterator = invRespMap.keySet().iterator(); iterator
+						.hasNext();) {
 					User u = (User) iterator.next();
 					String name = u.getName();
 					HashMap<Date, Response> rMap = invRespMap.get(u).getResponseMap();
 					for (Iterator it = rMap.keySet().iterator(); it.hasNext();) {
 						Date d = (Date) it.next();
-						if(date.equals(d)){
+						if (date.equals(d)) {
 							respToShow.put(name, rMap.get(d));
 						}
-							
-						
+
 					}
-					
+
 				}
-				
-				Log.i(TAG,"respToshow is: "+ respToShow);
-				
-				//hardcoding:
-				Calendar c = Calendar.getInstance();
-				c.add(Calendar.DATE, 7);
-				Date di=null;
-				try {
-					di = formatter.parse(formatter.format(c.getTime()));
-					c.add(Calendar.DATE, 1);
-					Date d2  = formatter.parse(formatter.format(c.getTime()));
-					if(date.equals(di) || date.equals(d2))
-					{
-					respToShow.put("Neha", Response.YES);
-					}
-					
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				
-				Toast.makeText(getApplicationContext(), respToShow.toString(), Toast.LENGTH_LONG).show();
-				 
+
+				Log.i(TAG, "respToshow is: " + respToShow);
+
+				Toast.makeText(getApplicationContext(), respToShow.toString(),
+						Toast.LENGTH_LONG).show();
 			}
 
 			@Override
 			public void onCaldroidViewCreated() {
-				if (caldroidFragment.getLeftArrowButton() != null) {
-//					Toast.makeText(getApplicationContext(), "Caldroid view is created",
-//							Toast.LENGTH_SHORT).show();
-				}
+
 			}
 
 		};
