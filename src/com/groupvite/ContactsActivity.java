@@ -45,11 +45,12 @@ public class ContactsActivity extends Activity {
     	contactsAdapter = new ContactsAdapter(getApplicationContext(), new ArrayList<User>());
     	lvContacts.setAdapter(contactsAdapter);
     	
-    	/*etMessage=(EditText)findViewById(R.id.etMessage);
+    	etMessage=(EditText)findViewById(R.id.etMessage);
     	GroupViteApp application = (GroupViteApp) getApplication();
-    	if (application.getCurrentEvent().getMessageBody()!=null && !application.getCurrentEvent().getMessageBody().equals("")){
-    	    etMessage.setText(application.getCurrentEvent().getMessageBody());
-    	}*/
+    	
+//    	if (application.getCurrentEvent().getMessageBody()!=null && !application.getCurrentEvent().getMessageBody().equals("")){
+//    	    etMessage.setText(application.getCurrentEvent().getMessageBody());
+//    	}
     	pickFriendsButton = (Button) findViewById(R.id.btnAddContacts);
     	pickFriendsButton.setOnClickListener(new View.OnClickListener() {
     		public void onClick(View v) {
