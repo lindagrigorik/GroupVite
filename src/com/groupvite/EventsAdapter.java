@@ -3,6 +3,8 @@ package com.groupvite;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,9 @@ public class EventsAdapter extends ArrayAdapter<Event> {
 		TextView nameView = (TextView) view.findViewById(R.id.tvName);
 		nameView.setText(event.getEventTitle());
 		
+		TextView messageView = (TextView) view.findViewById(R.id.tvMessage);
+		messageView.setTextColor(Color.parseColor("#989898"));
+		messageView.setTypeface(null, Typeface.ITALIC);
 		return view;
 	}
 }
