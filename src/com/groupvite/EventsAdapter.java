@@ -29,6 +29,11 @@ public class EventsAdapter extends ArrayAdapter<Event> {
 			view = (View) inflater.inflate(R.layout.profile_pic_item, null);
 		}
 		
+		if(position % 2 == 0)
+		     view.setBackgroundColor(Color.WHITE);
+		else 
+		     view.setBackgroundColor(Color.parseColor("#99cc99"));
+		      
 		Event event = getItem(position);		
 		ImageView imageView = (ImageView) view.findViewById(R.id.ivProfile);
 		ImageLoader.getInstance().displayImage(event.getHost().getPicUrl(), imageView);

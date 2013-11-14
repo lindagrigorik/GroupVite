@@ -101,27 +101,8 @@ public class EventsActivity extends Activity {
 			}
 		});
 
-		/*
-		 * Intent i = getIntent(); Event event = (Event)
-		 * i.getSerializableExtra("event"); String eventTitle =
-		 * i.getStringExtra("eventTitle"); ArrayList<Date> selectedDates =
-		 * ((ArrayList<Date>) i.getSerializableExtra("selectedDates"));
-		 * Toast.makeText(getApplicationContext(), "event title is: " +
-		 * event.getEventTitle(), Toast.LENGTH_SHORT).show();
-		 * Toast.makeText(getApplicationContext(), "selected dates are: " +
-		 * event.getDays(), Toast.LENGTH_SHORT).show();
-		 */
 	}
 
-	/*
-	 * private static void getFacebookIdInBackground() {
-	 * Request.executeMeRequestAsync(ParseFacebookUtils.getSession(), new
-	 * Request.GraphUserCallback() {
-	 * 
-	 * @Override public void onCompleted(GraphUser user, Response response) { if
-	 * (user != null) { ParseUser.getCurrentUser().put("fbId", user.getId());
-	 * ParseUser.getCurrentUser().saveInBackground(); } } }); }
-	 */
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
