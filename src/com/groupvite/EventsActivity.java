@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,11 +21,12 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
+import com.groupvite.fragments.EventsListFragment;
 import com.groupvite.models.Event;
 import com.groupvite.models.User;
 import com.groupvite.util.ParseClient;
 
-public class EventsActivity extends Activity {
+public class EventsActivity extends FragmentActivity {
 
 	private ListView lvEvents;
 	private EventsAdapter eventsAdapter;
@@ -32,43 +35,6 @@ public class EventsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_events);
-
-		/*
-		 * ParseFacebookUtils.logIn(this, new LogInCallback() {
-		 * 
-		 * @Override public void done(ParseUser user, ParseException arg1) { // TODO
-		 * Auto-generated method stub if (user != null) {
-		 * getFacebookIdInBackground(); } } });
-		 */
-
-		lvEvents = (ListView) findViewById(R.id.lvEvents);
-		eventsAdapter = new EventsAdapter(getApplicationContext(),
-				new ArrayList<Event>());
-		lvEvents.setAdapter(eventsAdapter);
-		lvEvents.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> adapter, View view, int position,
-					long res) {
-				Event e = (Event) adapter.getItemAtPosition(position);
-				User currentUser = ((GroupViteApp)getApplication()).getCurrentUser();
-//				Toast.makeText(EventsActivity.this,
-//						"Selecting this item here: " + e,
-//						Toast.LENGTH_SHORT).show();
-				Intent i = new Intent(EventsActivity.this,CalendarActivity.class);
-				i.putExtra("event",e);
-				i.putExtra("currentUser", currentUser);
-
-				if(e.getHost().getParseId().equalsIgnoreCase(currentUser.getParseId())){
-					//it's the host's own event that he/she is trying to edit
-					i.putExtra("operation", "EDIT_CREATED_EVENT");
-				}else{
-					i.putExtra("operation", "RESPOND_TO_INVITE");
-				}
-				
-				startActivity(i);
-			}
-		});
 
 		// start Facebook login
 		Session.openActiveSession(this, true, new Session.StatusCallback() {
@@ -82,21 +48,20 @@ public class EventsActivity extends Activity {
 						public void onCompleted(GraphUser graphUser, Response response) {
 							if (graphUser != null) {
 								User user = User.fromGraphUser(graphUser);
-								ParseClient.populateUser(user);
-								ParseClient.createParseUser(user);
-								ArrayList<Event> events = ParseClient.getUserEventsList(user);
+								
+								FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+								EventsListFragment fragment = EventsListFragment.newInstance(user);
+								ft.replace(R.id.flEvents, fragment);
+								ft.commit();
+								
+								//FIXME: WE SHOULD CHANGE THIS GLOBAL VARIABLE USAGE!!!
 								((GroupViteApp) getApplication()).setCurrentUser(user);
-
-								if (events != null ) eventsAdapter.addAll(events);
-
-								Toast.makeText(getApplicationContext(),
-										"Welcome " + user.getName() + "!", Toast.LENGTH_SHORT)
-										.show();
+								
 							}
 						}
 					}).executeAsync();
 				} else {
-					Log.d("SUBHA", "session unopened");
+					Log.d("GROUPVITE", "session unopened");
 				}
 			}
 		});

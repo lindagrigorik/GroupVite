@@ -26,7 +26,7 @@ public class EventsAdapter extends ArrayAdapter<Event> {
 		View view = (View) convertView;
 		if (view == null) {
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			view = (View) inflater.inflate(R.layout.profile_pic_item, null);
+			view = (View) inflater.inflate(R.layout.event_list_item, null);
 		}
 		
 		if(position % 2 == 0)
